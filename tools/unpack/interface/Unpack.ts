@@ -8,11 +8,30 @@ import { printFatalError, printWarning } from '#/util/Logger.js';
 import { listFilesExt } from '#tools/pack/Parse.js';
 import { InterfacePack, ModelPack, ObjPack, SeqPack, VarbitPack, VarpPack } from '#tools/pack/PackFile.js';
 
-function loadPackFiles() {
-    for (const pack of [InterfacePack, ModelPack, ObjPack, SeqPack, VarbitPack, VarpPack]) {
-        pack.clear();
-        pack.load(`${Environment.build.srcDir}/pack/${pack.type}.pack`);
+function renameModel(id: number) {
+    const existingFiles = listFilesExt(`${Environment.build.srcDir}/models`, '.ob2');
+
+    let model = ModelPack.getById(id);
+    if (model.startsWith('model_')) {
+        let name = 'com_i1';
+        let i = 2;
+        while (ModelPack.getByName(name) !== -1) {
+            name = `com_i${i}`;
+            i++;
+        }
+
+        const filePath = existingFiles.find(x => x.endsWith(`/${model}.ob2`));
+        if (filePath) {
+            fs.renameSync(filePath, `${Environment.build.srcDir}/models/com/${name}.ob2`);
+        } else {
+            console.error('Model not found on filesystem', 'com', model);
+        }
+
+        model = name;
+        ModelPack.register(id, model);
     }
+
+    return model;
 }
 
 const enum ComponentType {
@@ -258,6 +277,10 @@ class IfType {
                 }
             }
 
+            if (com.comType === 8) {
+                com.text = dat.gjstr();
+            }
+
             if (com.buttonType === ButtonType.BUTTON_TARGET || com.comType === ComponentType.TYPE_INV) {
                 com.actionVerb = dat.gjstr();
                 com.action = dat.gjstr();
@@ -334,10 +357,6 @@ class IfType {
             const src = com.export();
 
             const existingFile = existingFiles.find(x => x.endsWith(`/${name}.if`));
-            if (existingFile && fs.readFileSync(existingFile, 'utf-8').split(/\r?\n/, 1)[0] === 'type=overlay') {
-                src.unshift('type=overlay', '');
-            }
-
             const destFile = existingFile ?? `${Environment.build.srcDir}/scripts/interfaces/${name}.if`;
             fs.writeFileSync(destFile, src.join('\n') + '\n');
         }
@@ -697,11 +716,11 @@ class IfType {
 
         if (this.comType === 6) {
             if (this.model) {
-                temp.push(`model=${ModelPack.getById(this.model) || 'model_' + this.model}`);
+                temp.push(`model=${renameModel(this.model)}`);
             }
 
             if (this.activeModel) {
-                temp.push(`activemodel=${ModelPack.getById(this.activeModel) || 'model_' + this.activeModel}`);
+                temp.push(`activemodel=${renameModel(this.activeModel)}`);
             }
 
             if (this.anim !== -1) {
@@ -775,6 +794,12 @@ class IfType {
                         temp.push(`option${i + 1}=${this.iops[i]}`);
                     }
                 }
+            }
+        }
+
+        if (this.comType === 8) {
+            if (this.text) {
+                temp.push(`text=${this.text}`);
             }
         }
 
@@ -890,8 +915,12 @@ if (!interfaceData) {
     process.exit(1);
 }
 
-loadPackFiles();
+if (!fs.existsSync(`${Environment.build.srcDir}/models/com`)) {
+    fs.mkdirSync(`${Environment.build.srcDir}/models/com`, { recursive: true });
+}
 
 IfType.unpack(new Jagfile(new Packet(interfaceData)));
 IfType.exportOrder();
 IfType.exportSrc();
+
+ModelPack.save();

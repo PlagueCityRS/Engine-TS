@@ -34,6 +34,10 @@ export function unpackFloConfig(config: ConfigIdx, id: number): string[] {
 
             // console.log(id + '=' + debugname);
             // def.push(`debugname=${debugname}`);
+        } else if (code === 7) {
+            const mapcolour = dat.g3();
+
+            def.push(`mapcolour=0x${mapcolour.toString(16).toUpperCase().padStart(6, '0')}`);
         } else {
             printWarning(`unknown flo code ${code}`);
         }

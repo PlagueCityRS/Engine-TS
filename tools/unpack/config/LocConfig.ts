@@ -1,7 +1,7 @@
 import { modelsHaveTexture } from '#/cache/graphics/Model.js';
 import ColorConversion from '#/util/ColorConversion.js';
 import { printFatalError, printWarning } from '#/util/Logger.js';
-import { LocPack, ModelPack, SeqPack, TexturePack, VarbitPack } from '#tools/pack/PackFile.js';
+import { LocPack, ModelPack, SeqPack, TexturePack, VarbitPack, VarpPack } from '#tools/pack/PackFile.js';
 
 import { ConfigIdx } from './Common.js';
 
@@ -12,7 +12,7 @@ function renameModel(id: number, shape: number) {
         model = model.substring(0, model.length - 3);
     }
 
-    if (shape !== LocShapeSuffix._8 && model.endsWith(LocShapeSuffix[shape])) {
+    if (model.endsWith(LocShapeSuffix[shape])) {
         model = model.substring(0, model.length - 2);
     }
 
@@ -20,14 +20,16 @@ function renameModel(id: number, shape: number) {
 }
 
 type LocModelShape = { model: number; shape: number };
-export type LocModels = { models: LocModelShape[] };
+export type LocModels = { models: LocModelShape[]; ldModels: LocModelShape[] };
 
 export function unpackLocModels(config: ConfigIdx, id: number): LocModels {
     const { dat, pos } = config;
     dat.pos = pos[id];
 
     const models: LocModelShape[] = [];
+    const ldModels: LocModelShape[] = [];
 
+    let decodedModels = false;
     while (true) {
         const code = dat.g1();
         if (code === 0) {
@@ -42,11 +44,20 @@ export function unpackLocModels(config: ConfigIdx, id: number): LocModels {
                 const model = dat.g2();
                 const shape = dat.g1();
 
-                models.push({
-                    model,
-                    shape
-                });
+                if (!decodedModels) {
+                    models.push({
+                        model,
+                        shape
+                    });
+                } else {
+                    ldModels.push({
+                        model,
+                        shape
+                    });
+                }
             }
+
+            decodedModels = true;
         } else if (code === 2) {
             dat.gjstr();
         } else if (code === 3) {
@@ -59,11 +70,20 @@ export function unpackLocModels(config: ConfigIdx, id: number): LocModels {
                 const model = dat.g2();
                 const shape = LocShapeSuffix._8;
 
-                models.push({
-                    model,
-                    shape
-                });
+                if (!decodedModels) {
+                    models.push({
+                        model,
+                        shape
+                    });
+                } else {
+                    ldModels.push({
+                        model,
+                        shape
+                    });
+                }
             }
+
+            decodedModels = true;
         } else if (code === 14) {
             dat.g1();
         } else if (code === 15) {
@@ -129,6 +149,7 @@ export function unpackLocModels(config: ConfigIdx, id: number): LocModels {
             dat.gbool();
         } else if (code === 77) {
             dat.g2();
+            dat.g2();
 
             const states = dat.g1();
             for (let i = 0; i <= states; i++) {
@@ -137,7 +158,7 @@ export function unpackLocModels(config: ConfigIdx, id: number): LocModels {
         }
     }
 
-    return { models };
+    return { models, ldModels };
 }
 
 export enum LocShapeSuffix {
@@ -174,21 +195,12 @@ export function unpackLocConfig(config: ConfigIdx, id: number): string[] {
     const def: string[] = [];
     def.push(`[${debugname}]`);
 
+    let decodedModels = false;
     let lastCode = 0;
 
     const modelIds: number[] = [];
-    const modelNames: string[] = [];
     const recolSrc: number[] = [];
     const recolDst: number[] = [];
-
-    const addModel = (name: string) => {
-        if (modelNames.includes(name)) {
-            return;
-        }
-
-        def.push(`model${modelNames.length > 0 ? modelNames.length + 1 : ''}=${name}`);
-        modelNames.push(name);
-    };
 
     while (true) {
         const code = dat.g1();
@@ -199,6 +211,8 @@ export function unpackLocConfig(config: ConfigIdx, id: number): string[] {
         if (code === 1) {
             const count = dat.g1();
 
+            let written = 1;
+            let lastName;
             for (let i = 0; i < count; i++) {
                 const modelId = dat.g2();
                 const shape = dat.g1();
@@ -206,8 +220,19 @@ export function unpackLocConfig(config: ConfigIdx, id: number): string[] {
                 modelIds.push(modelId);
 
                 const name = renameModel(modelId, shape);
-                addModel(name);
+                if (lastName !== name) {
+                    if (!decodedModels) {
+                        def.push(`model${written > 1 ? written : ''}=${name}`);
+                    } else {
+                        def.push(`ldmodel${written > 1 ? written : ''}=${name}`);
+                    }
+
+                    written++;
+                    lastName = name;
+                }
             }
+
+            decodedModels = true;
         } else if (code === 2) {
             const name = dat.gjstr();
             def.push(`name=${name}`);
@@ -218,14 +243,21 @@ export function unpackLocConfig(config: ConfigIdx, id: number): string[] {
             const count = dat.g1();
 
             for (let i = 0; i < count; i++) {
+                const index = i + 1;
                 const modelId = dat.g2();
-                const shape = LocShapeSuffix._8;
+                const shape = 10;
 
                 modelIds.push(modelId);
 
                 const name = renameModel(modelId, shape);
-                addModel(name);
+                if (!decodedModels) {
+                    def.push(`model${index > 1 ? index : ''}=${name}`);
+                } else {
+                    def.push(`ldmodel${index > 1 ? index : ''}=${name}`);
+                }
             }
+
+            decodedModels = true;
         } else if (code === 14) {
             const width = dat.g1();
             def.push(`width=${width}`);
@@ -250,6 +282,8 @@ export function unpackLocConfig(config: ConfigIdx, id: number): string[] {
 
             const seq = SeqPack.getById(seqId) || 'seq_' + seqId;
             def.push(`anim=${seq}`);
+        } else if (code === 25) {
+            def.push('hasalpha=yes');
         } else if (code === 28) {
             const wallwidth = dat.g1();
             def.push(`wallwidth=${wallwidth}`);
@@ -322,16 +356,23 @@ export function unpackLocConfig(config: ConfigIdx, id: number): string[] {
             def.push(`raiseobject=${raiseobject ? 'yes' : 'no'}`);
         } else if (code === 77) {
             const varbit = dat.g2();
-            const name = VarbitPack.getById(varbit) || `varbit_${varbit}`;
-            def.push(`multivarbit=${name}`);
+            const varp = dat.g2();
+
+            if (varbit === 65535) {
+                const name = VarpPack.getById(varp) || 'varp_' + varp;
+                def.push(`multivar=${name}`);
+            } else {
+                const name = VarbitPack.getById(varbit) || 'varbit_' + varbit;
+                def.push(`multivar=${name}`);
+            }
 
             const states = dat.g1();
             for (let i = 0; i <= states; i++) {
                 const multiloc = dat.g2();
 
                 if (multiloc !== 65535) {
-                    const loc = LocPack.getById(multiloc) || `loc_${multiloc}`;
-                    def.push(`multiloc=${i},${loc}`);
+                    const name = LocPack.getById(multiloc) || 'loc_' + multiloc;
+                    def.push(`multiloc=${i},${name}`);
                 }
             }
         } else {
