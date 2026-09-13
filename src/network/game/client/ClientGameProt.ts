@@ -13,6 +13,7 @@ export default class ClientGameProt {
     // UNKOWN
     static readonly UNK1 = new ClientGameProt(193, 4); // in move npcs method
     static readonly UNK2 = new ClientGameProt(1, 2); // in game loop under handleinputkey
+    static readonly UNK3 = new ClientGameProt(182, 0); // in do action before invbutton4
 
     // static readonly ANTICHEAT_OPLOGIC1 = new ClientGameProt(195, 4);
     // static readonly ANTICHEAT_OPLOGIC2 = new ClientGameProt(81, 2);
@@ -72,11 +73,11 @@ export default class ClientGameProt {
     // static readonly OPHELDT = new ClientGameProt(112, 8);
     static readonly OPHELDU = new ClientGameProt(137, 12);
 
-    // static readonly INV_BUTTON1 = new ClientGameProt(44, 6);
-    // static readonly INV_BUTTON2 = new ClientGameProt(111, 6);
-    // static readonly INV_BUTTON3 = new ClientGameProt(124, 6);
-    // static readonly INV_BUTTON4 = new ClientGameProt(248, 6);
-    // static readonly INV_BUTTON5 = new ClientGameProt(227, 6);
+    static readonly INV_BUTTON1 = new ClientGameProt(174, 6);
+    static readonly INV_BUTTON2 = new ClientGameProt(226, 6);
+    static readonly INV_BUTTON3 = new ClientGameProt(93, 6);
+    static readonly INV_BUTTON4 = new ClientGameProt(255, 6);
+    static readonly INV_BUTTON5 = new ClientGameProt(117, 6);
 
     static readonly IF_BUTTON = new ClientGameProt(208, 2);
     static readonly RESUME_PAUSEBUTTON = new ClientGameProt(154, 2);
