@@ -12,9 +12,9 @@ export default class OpHeldDecoder extends ClientGameMessageDecoder<OpHeld> {
     }
 
     decode(buf: Packet) {
-        let obj = -1; //buf.g2();
-        let slot = -1; //buf.g2();
-        let com = -1; //buf.g2();
+        let obj = -1;
+        let slot = -1;
+        let com = -1;
 
         switch (this.op) {
             case 1:
@@ -23,16 +23,26 @@ export default class OpHeldDecoder extends ClientGameMessageDecoder<OpHeld> {
                 obj = buf.g2_alt3();
                 break;
             case 2:
-            case 3:
-            case 4:
-            case 5:
+                slot = buf.g2_alt2();
+                obj = buf.g2_alt2();
+                com = buf.g2();
                 break;
-            default:
-                throw new Error(`Unhandled op held: ${this.op}`);
+            case 3:
+                com = buf.g2();
+                slot = buf.g2();
+                obj = buf.g2();
+                break;
+            case 4:
+                com = buf.g2_alt2();
+                obj = buf.g2_alt2();
+                slot = buf.g2();
+                break;
+            case 5:
+                com = buf.g2_alt1();
+                slot = buf.g2_alt1();
+                obj = buf.g2_alt3();
+                break;
         }
-
-        console.log(`OpHeldDecoder: op=${this.op}, obj=${obj}, slot=${slot}, com=${com}`);
-
         return new OpHeld(this.op, obj, slot, com);
     }
 }

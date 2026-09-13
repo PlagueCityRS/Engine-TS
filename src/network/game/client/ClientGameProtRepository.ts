@@ -20,7 +20,7 @@ import IdleTimerDecoder from '#/network/game/client/codec/IdleTimerDecoder.js';
 import MoveClickDecoder from '#/network/game/client/codec/MoveClickDecoder.js';
 import OpHeldDecoder from '#/network/game/client/codec/OpHeldDecoder.js';
 // import OpHeldTDecoder from '#/network/game/client/codec/OpHeldTDecoder.js';
-// import OpHeldUDecoder from '#/network/game/client/codec/OpHeldUDecoder.js';
+import OpHeldUDecoder from '#/network/game/client/codec/OpHeldUDecoder.js';
 import OpLocDecoder from '#/network/game/client/codec/OpLocDecoder.js';
 // import OpLocTDecoder from '#/network/game/client/codec/OpLocTDecoder.js';
 // import OpLocUDecoder from '#/network/game/client/codec/OpLocUDecoder.js';
@@ -54,7 +54,7 @@ import IdleTimerHandler from '#/network/game/client/handler/IdleTimerHandler.js'
 import MoveClickHandler from '#/network/game/client/handler/MoveClickHandler.js';
 import OpHeldHandler from '#/network/game/client/handler/OpHeldHandler.js';
 // import OpHeldTHandler from '#/network/game/client/handler/OpHeldTHandler.js';
-// import OpHeldUHandler from '#/network/game/client/handler/OpHeldUHandler.js';
+import OpHeldUHandler from '#/network/game/client/handler/OpHeldUHandler.js';
 import OpLocHandler from '#/network/game/client/handler/OpLocHandler.js';
 // import OpLocTHandler from '#/network/game/client/handler/OpLocTHandler.js';
 // import OpLocUHandler from '#/network/game/client/handler/OpLocUHandler.js';
@@ -131,7 +131,7 @@ class ClientGameProtRepository {
         this.bind(new OpHeldDecoder(ClientGameProt.OPHELD4, 4), new OpHeldHandler());
         this.bind(new OpHeldDecoder(ClientGameProt.OPHELD5, 5), new OpHeldHandler());
         // this.bind(new OpHeldTDecoder(), new OpHeldTHandler());
-        // this.bind(new OpHeldUDecoder(), new OpHeldUHandler());
+        this.bind(new OpHeldUDecoder(), new OpHeldUHandler());
         this.bind(new OpLocDecoder(ClientGameProt.OPLOC1, 1), new OpLocHandler());
         // this.bind(new OpLocDecoder(ClientGameProt.OPLOC2, 2), new OpLocHandler());
         // this.bind(new OpLocDecoder(ClientGameProt.OPLOC3, 3), new OpLocHandler());

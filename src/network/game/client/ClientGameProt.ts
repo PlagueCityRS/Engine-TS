@@ -66,11 +66,11 @@ export default class ClientGameProt {
 
     static readonly OPHELD1 = new ClientGameProt(140, 6);
     static readonly OPHELD2 = new ClientGameProt(17, 6);
-    static readonly OPHELD3 = new ClientGameProt(40, 6);
-    static readonly OPHELD4 = new ClientGameProt(191, 6);
-    static readonly OPHELD5 = new ClientGameProt(79, 6);
+    static readonly OPHELD3 = new ClientGameProt(176, 6);
+    static readonly OPHELD4 = new ClientGameProt(73, 6);
+    static readonly OPHELD5 = new ClientGameProt(19, 6);
     // static readonly OPHELDT = new ClientGameProt(112, 8);
-    // static readonly OPHELDU = new ClientGameProt(200, 12);
+    static readonly OPHELDU = new ClientGameProt(137, 12);
 
     // static readonly INV_BUTTON1 = new ClientGameProt(44, 6);
     // static readonly INV_BUTTON2 = new ClientGameProt(111, 6);
