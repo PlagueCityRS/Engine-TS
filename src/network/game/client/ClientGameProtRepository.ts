@@ -133,10 +133,10 @@ class ClientGameProtRepository {
         // this.bind(new OpHeldTDecoder(), new OpHeldTHandler());
         this.bind(new OpHeldUDecoder(), new OpHeldUHandler());
         this.bind(new OpLocDecoder(ClientGameProt.OPLOC1, 1), new OpLocHandler());
-        // this.bind(new OpLocDecoder(ClientGameProt.OPLOC2, 2), new OpLocHandler());
-        // this.bind(new OpLocDecoder(ClientGameProt.OPLOC3, 3), new OpLocHandler());
-        // this.bind(new OpLocDecoder(ClientGameProt.OPLOC4, 4), new OpLocHandler());
-        // this.bind(new OpLocDecoder(ClientGameProt.OPLOC5, 5), new OpLocHandler());
+        this.bind(new OpLocDecoder(ClientGameProt.OPLOC2, 2), new OpLocHandler());
+        this.bind(new OpLocDecoder(ClientGameProt.OPLOC3, 3), new OpLocHandler());
+        this.bind(new OpLocDecoder(ClientGameProt.OPLOC4, 4), new OpLocHandler());
+        this.bind(new OpLocDecoder(ClientGameProt.OPLOC5, 5), new OpLocHandler());
         // this.bind(new OpLocTDecoder(), new OpLocTHandler());
         // this.bind(new OpLocUDecoder(), new OpLocUHandler());
         this.bind(new OpNpcDecoder(ClientGameProt.OPNPC1, 1), new OpNpcHandler());
