@@ -10,7 +10,7 @@ export class PlayerInfoAppearance implements InfoMessage {
     constructor(private readonly bytes: Uint8Array) {}
 
     encode(buf: Packet): void {
-        buf.p1(this.bytes.length);
+        buf.p1_alt1(this.bytes.length);
         buf.pdata(this.bytes, 0, this.bytes.length);
     }
 
@@ -47,7 +47,7 @@ export class PlayerInfoFaceCoord implements InfoMessage {
 
     encode(buf: Packet): void {
         buf.p2(this.x);
-        buf.p2(this.z);
+        buf.p2_alt1(this.z);
     }
 
     test(): number {
@@ -66,8 +66,8 @@ export class PlayerInfoAnim implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p2(this.anim);
-        buf.p1(this.delay);
+        buf.p2_alt1(this.anim);
+        buf.p1_alt1(this.delay);
     }
 
     test(): number {
@@ -104,10 +104,10 @@ export class PlayerInfoDamage implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p1(this.damage);
         buf.p1(this.damageType);
-        buf.p1(this.currentHitpoints);
-        buf.p1(this.baseHitpoints);
+        buf.p1_alt3(this.damage);
+        buf.p1_alt2(this.currentHitpoints);
+        buf.p1_alt3(this.baseHitpoints);
     }
 
     test(): number {
@@ -152,8 +152,8 @@ export class PlayerInfoSpotanim implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p2(this.graphicId);
-        buf.p4((this.graphicHeight << 16) | this.graphicDelay);
+        buf.p2_alt3(this.graphicId);
+        buf.p4_alt2((this.graphicHeight << 16) | this.graphicDelay);
     }
 
     test(): number {
@@ -199,7 +199,7 @@ export class NpcInfoFaceEntity implements InfoMessage {
     constructor(private readonly entity: number) {}
 
     encode(buf: Packet): void {
-        buf.p2(this.entity);
+        buf.p2_alt2(this.entity);
     }
 
     test(): number {
@@ -219,7 +219,7 @@ export class NpcInfoFaceCoord implements InfoMessage {
 
     encode(buf: Packet): void {
         buf.p2(this.x);
-        buf.p2(this.z);
+        buf.p2_alt1(this.z);
     }
 
     test(): number {
@@ -238,8 +238,8 @@ export class NpcInfoAnim implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p2(this.anim);
-        buf.p1(this.delay);
+        buf.p2_alt1(this.anim);
+        buf.p1_alt2(this.delay);
     }
 
     test(): number {
@@ -276,10 +276,10 @@ export class NpcInfoDamage implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p1(this.damage);
-        buf.p1(this.damageType);
-        buf.p1(this.currentHitpoints);
-        buf.p1(this.baseHitpoints);
+        buf.p1_alt2(this.damage);
+        buf.p1_alt2(this.damageType);
+        buf.p1_alt2(this.currentHitpoints);
+        buf.p1_alt1(this.baseHitpoints);
     }
 
     test(): number {
@@ -295,7 +295,7 @@ export class NpcInfoChangeType implements InfoMessage {
     constructor(private readonly changeType: number) {}
 
     encode(buf: Packet): void {
-        buf.p2(this.changeType);
+        buf.p2_alt3(this.changeType);
     }
 
     test(): number {
@@ -315,8 +315,8 @@ export class NpcInfoSpotanim implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p2(this.graphicId);
-        buf.p4((this.graphicHeight << 16) | this.graphicDelay);
+        buf.p2_alt2(this.graphicId);
+        buf.p4_alt2((this.graphicHeight << 16) | this.graphicDelay);
     }
 
     test(): number {

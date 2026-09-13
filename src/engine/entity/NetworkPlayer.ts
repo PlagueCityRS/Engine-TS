@@ -98,6 +98,7 @@ export class NetworkPlayer extends Player {
 
             const packetType = ClientGameProt.byId[this.client.opcode];
             if (!packetType) {
+                printError(`Unhandled packet opcode: ${this.client.opcode}`);
                 this.client.opcode = -1;
                 this.client.close();
                 return false;

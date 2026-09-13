@@ -1,15 +1,15 @@
 export enum PlayerInfoProt {
-    APPEARANCE = 0x1,
-    ANIM = 0x2,
-    FACE_ENTITY = 0x4,
+    APPEARANCE = 0x20,
+    ANIM = 0x1,
+    FACE_ENTITY = 0x80,
     SAY = 0x8,
-    DAMAGE = 0x10,
-    FACE_COORD = 0x20,
+    DAMAGE = 0x200,
+    FACE_COORD = 0x2,
     CHAT = 0x40,
-    BIG = 0x80,
+    BIG = 0x4,
     SPOT_ANIM = 0x100,
-    EXACT_MOVE = 0x200,
-    DAMAGE2 = 0x400
+    EXACT_MOVE = 0x400,
+    DAMAGE2 = 0x10
 }
 
 export function playerInfoProtIndex(prot: PlayerInfoProt): number {
@@ -39,14 +39,14 @@ export function playerInfoProtIndex(prot: PlayerInfoProt): number {
 }
 
 export enum NpcInfoProt {
-    DAMAGE2 = 0x1,
+    DAMAGE2 = 0x120, //  lie
     ANIM = 0x2,
     FACE_ENTITY = 0x4,
-    SAY = 0x8,
-    DAMAGE = 0x10,
-    CHANGE_TYPE = 0x20,
-    SPOT_ANIM = 0x40,
-    FACE_COORD = 0x80
+    SAY = 0x40,
+    DAMAGE = 0x1,
+    CHANGE_TYPE = 0x10,
+    SPOT_ANIM = 0x8,
+    FACE_COORD = 0x20
 }
 
 export function npcInfoProtIndex(prot: NpcInfoProt): number {

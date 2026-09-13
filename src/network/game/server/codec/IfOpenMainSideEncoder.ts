@@ -8,6 +8,6 @@ export default class IfOpenMainSideEncoder extends ServerGameMessageEncoder<IfOp
 
     encode(buf: Packet, message: IfOpenMainSide): void {
         buf.p2(message.main);
-        buf.p2(message.side);
+        buf.p2_alt2(message.side);
     }
 }

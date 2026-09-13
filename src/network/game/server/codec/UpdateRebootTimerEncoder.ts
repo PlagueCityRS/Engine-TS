@@ -7,6 +7,6 @@ export default class UpdateRebootTimerEncoder extends ServerGameMessageEncoder<U
     prot = ServerGameProt.UPDATE_REBOOT_TIMER;
 
     encode(buf: Packet, message: UpdateRebootTimer): void {
-        buf.p2(message.ticks);
+        buf.p2_alt2(message.ticks);
     }
 }

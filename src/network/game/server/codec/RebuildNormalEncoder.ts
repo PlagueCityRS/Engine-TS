@@ -7,7 +7,7 @@ export default class RebuildNormalEncoder extends ServerGameMessageEncoder<Rebui
     prot = ServerGameProt.REBUILD_NORMAL;
 
     encode(buf: Packet, message: RebuildNormal): void {
-        buf.p2(message.zoneX);
-        buf.p2(message.zoneZ);
+        buf.p2_alt3(message.zoneZ);
+        buf.p2_alt3(message.zoneX);
     }
 }

@@ -7,6 +7,6 @@ export default class IfOpenChatEncoder extends ServerGameMessageEncoder<IfOpenCh
     prot = ServerGameProt.IF_OPENCHAT;
 
     encode(buf: Packet, message: IfOpenChat): void {
-        buf.p2(message.component);
+        buf.p2_alt2(message.component);
     }
 }

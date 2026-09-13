@@ -1357,6 +1357,7 @@ export default class Player extends PathingEntity {
 
         stream.p1(this.gender);
         stream.p1(this.headicons);
+        stream.p1(0);
 
         // todo: transmog support - write first "slot" with -1, followed by npc ID
 

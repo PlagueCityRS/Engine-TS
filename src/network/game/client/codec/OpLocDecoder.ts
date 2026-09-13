@@ -12,9 +12,22 @@ export default class OpLocDecoder extends ClientGameMessageDecoder<OpLoc> {
     }
 
     decode(buf: Packet) {
-        const x = buf.g2();
-        const z = buf.g2();
-        const loc = buf.g2();
+        let x = -1;
+        let z = -1;
+        let loc = -1;
+
+        switch (this.op) {
+            case 1:
+                z = buf.g2_alt1();
+                loc = buf.g2_alt2();
+                x = buf.g2_alt3();
+                break;
+            default:
+                z = buf.g2_alt1();
+                loc = buf.g2_alt2();
+                x = buf.g2_alt3();
+                throw new Error(`Unhandled op loc: ${this.op}`);
+        }
 
         return new OpLoc(this.op, x, z, loc);
     }

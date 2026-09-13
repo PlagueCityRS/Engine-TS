@@ -1,6 +1,6 @@
 import ServerGameMessage from '#/network/game/server/ServerGameMessage.js';
 
-export default class UpdateZoneFullFollows extends ServerGameMessage {
+export default class UpdateZoneFFullFollows extends ServerGameMessage {
     constructor(
         readonly zoneX: number,
         readonly zoneZ: number,

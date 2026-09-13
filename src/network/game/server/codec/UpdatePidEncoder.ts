@@ -7,7 +7,7 @@ export default class UpdatePidEncoder extends ServerGameMessageEncoder<UpdatePid
     prot = ServerGameProt.UPDATE_PID;
 
     encode(buf: Packet, message: UpdatePid): void {
-        buf.p2(message.uid);
-        buf.pbool(message.members);
+        buf.p2_alt1(message.uid);
+        buf.pbool_alt3(message.members);
     }
 }

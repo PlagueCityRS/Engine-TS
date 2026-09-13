@@ -7,6 +7,6 @@ export default class IfOpenOverlayEncoder extends ServerGameMessageEncoder<IfOpe
     prot = ServerGameProt.IF_OPENOVERLAY;
 
     encode(buf: Packet, message: IfOpenOverlay): void {
-        buf.p2(message.component);
+        buf.p2_alt2(message.component);
     }
 }

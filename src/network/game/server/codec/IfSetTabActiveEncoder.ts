@@ -7,6 +7,6 @@ export default class IfSetTabEncoder extends ServerGameMessageEncoder<IfSetTabAc
     prot = ServerGameProt.IF_SETTAB_ACTIVE;
 
     encode(buf: Packet, message: IfSetTabActive): void {
-        buf.p1(message.tab);
+        buf.p1_alt1(message.tab);
     }
 }

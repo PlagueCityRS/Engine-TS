@@ -8,7 +8,7 @@ export default class ObjAddEncoder extends ServerGameZoneMessageEncoder<ObjAdd> 
 
     encode(buf: Packet, message: ObjAdd): void {
         buf.p1(message.coord);
-        buf.p2(message.obj);
-        buf.p2(Math.min(message.count, 65535));
+        buf.p2_alt2(message.obj);
+        buf.p2_alt3(Math.min(message.count, 65535));
     }
 }

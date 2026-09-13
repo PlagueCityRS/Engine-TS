@@ -8,7 +8,7 @@ export default class EventCameraPositionDecoder extends ClientGameMessageDecoder
     prot = ClientGameProt.EVENT_CAMERA_POSITION;
 
     decode(buf: Packet) {
-        const pitch = buf.g2();
+        const pitch = buf.g2_alt3();
         const yaw = buf.g2();
 
         return new EventCameraPosition(pitch, yaw);

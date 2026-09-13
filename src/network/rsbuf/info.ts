@@ -118,10 +118,12 @@ export class PlayerInfoEncoder {
 
     private add(renderer: PlayerRenderer, player: Player, other: Player, pid: number, x: number, z: number, jump: boolean): void {
         this.buf.pbit(11, pid);
-        this.buf.pbit(5, x);
         this.buf.pbit(5, z);
-        this.buf.pbit(1, jump ? 1 : 0);
         this.buf.pbit(1, 1);
+
+        this.buf.pbit(5, x);
+        this.buf.pbit(1, jump ? 1 : 0);
+
         this.lowdefinition(renderer, player, other);
         player.build.players.insert(other.pid);
     }
@@ -135,9 +137,9 @@ export class PlayerInfoEncoder {
     private teleport(renderer: PlayerRenderer, player: Player, other: Player, x: number, y: number, z: number, jump: boolean, extend: boolean): void {
         this.buf.pbit(1, 1);
         this.buf.pbit(2, 3);
-        this.buf.pbit(2, y);
         this.buf.pbit(7, x);
         this.buf.pbit(7, z);
+        this.buf.pbit(2, y);
         this.buf.pbit(1, jump ? 1 : 0);
         if (extend) {
             this.buf.pbit(1, 1);
@@ -230,32 +232,39 @@ export class PlayerInfoEncoder {
         if ((masks & PlayerInfoProt.APPEARANCE) !== 0) {
             renderer.write(this.updates, other.pid, PlayerInfoProt.APPEARANCE);
         }
+        if ((masks & PlayerInfoProt.SPOT_ANIM) !== 0) {
+            renderer.write(this.updates, other.pid, PlayerInfoProt.SPOT_ANIM);
+        }
         if ((masks & PlayerInfoProt.ANIM) !== 0) {
             renderer.write(this.updates, other.pid, PlayerInfoProt.ANIM);
-        }
-        if ((masks & PlayerInfoProt.FACE_ENTITY) !== 0) {
-            renderer.write(this.updates, other.pid, PlayerInfoProt.FACE_ENTITY);
-        }
-        if ((masks & PlayerInfoProt.SAY) !== 0) {
-            renderer.write(this.updates, other.pid, PlayerInfoProt.SAY);
-        }
-        if ((masks & PlayerInfoProt.DAMAGE) !== 0) {
-            renderer.write(this.updates, other.pid, PlayerInfoProt.DAMAGE);
         }
         if ((masks & PlayerInfoProt.FACE_COORD) !== 0) {
             renderer.write(this.updates, other.pid, PlayerInfoProt.FACE_COORD);
         }
-        if ((masks & PlayerInfoProt.CHAT) !== 0) {
-            renderer.write(this.updates, other.pid, PlayerInfoProt.CHAT);
-        }
-        if ((masks & PlayerInfoProt.SPOT_ANIM) !== 0) {
-            renderer.write(this.updates, other.pid, PlayerInfoProt.SPOT_ANIM);
-        }
+
+        // todo these streams
         if ((masks & PlayerInfoProt.EXACT_MOVE) !== 0 && other.exactMove !== null) {
             const x = ((player.origin.x() >> 3) - 6) << 3;
             const z = ((player.origin.z() >> 3) - 6) << 3;
             renderer.writeExactmove(this.updates, other.exactMove.startX - x, other.exactMove.startZ - z, other.exactMove.endX - x, other.exactMove.endZ - z, other.exactMove.begin, other.exactMove.finish, other.exactMove.dir);
         }
+
+        // DONE
+
+        if ((masks & PlayerInfoProt.SAY) !== 0) {
+            renderer.write(this.updates, other.pid, PlayerInfoProt.SAY);
+        }
+        if ((masks & PlayerInfoProt.FACE_ENTITY) !== 0) {
+            renderer.write(this.updates, other.pid, PlayerInfoProt.FACE_ENTITY);
+        }
+        if ((masks & PlayerInfoProt.DAMAGE) !== 0) {
+            renderer.write(this.updates, other.pid, PlayerInfoProt.DAMAGE);
+        }
+        // Todo these streams
+        if ((masks & PlayerInfoProt.CHAT) !== 0) {
+            renderer.write(this.updates, other.pid, PlayerInfoProt.CHAT);
+        }
+
         if ((masks & PlayerInfoProt.DAMAGE2) !== 0) {
             renderer.write(this.updates, other.pid, PlayerInfoProt.DAMAGE2);
         }
@@ -267,7 +276,7 @@ export class PlayerInfoEncoder {
 }
 
 export class NpcInfoEncoder {
-    private static readonly BITS_ADD = 14 + 11 + 5 + 5 + 1;
+    private static readonly BITS_ADD = 14 + 13 + 5 + 5 + 1;
     private static readonly BITS_RUN = 1 + 2 + 3 + 3 + 1;
     private static readonly BITS_WALK = 1 + 2 + 3 + 1;
     private static readonly BITS_EXTEND = 1 + 2;
@@ -359,11 +368,11 @@ export class NpcInfoEncoder {
 
     private add(renderer: NpcRenderer, player: Player, other: Npc, nid: number, ntype: number, x: number, z: number, jump: boolean): void {
         this.buf.pbit(14, nid);
-        this.buf.pbit(11, ntype);
-        this.buf.pbit(5, x);
-        this.buf.pbit(5, z);
         this.buf.pbit(1, jump ? 1 : 0);
+        this.buf.pbit(13, ntype);
         this.buf.pbit(1, 1);
+        this.buf.pbit(5, z);
+        this.buf.pbit(5, x);
         this.lowdefinition(renderer, other);
         player.build.npcs.insert(other.nid);
     }
@@ -439,29 +448,29 @@ export class NpcInfoEncoder {
     private writeBlocks(renderer: NpcRenderer, nid: number, masks: number): void {
         this.updates.p1(masks & 0xff);
 
-        if ((masks & NpcInfoProt.DAMAGE2) !== 0) {
-            renderer.write(this.updates, nid, NpcInfoProt.DAMAGE2);
-        }
-        if ((masks & NpcInfoProt.ANIM) !== 0) {
-            renderer.write(this.updates, nid, NpcInfoProt.ANIM);
-        }
-        if ((masks & NpcInfoProt.FACE_ENTITY) !== 0) {
-            renderer.write(this.updates, nid, NpcInfoProt.FACE_ENTITY);
-        }
         if ((masks & NpcInfoProt.SAY) !== 0) {
             renderer.write(this.updates, nid, NpcInfoProt.SAY);
+        }
+        if ((masks & NpcInfoProt.FACE_COORD) !== 0) {
+            renderer.write(this.updates, nid, NpcInfoProt.FACE_COORD);
         }
         if ((masks & NpcInfoProt.DAMAGE) !== 0) {
             renderer.write(this.updates, nid, NpcInfoProt.DAMAGE);
         }
-        if ((masks & NpcInfoProt.CHANGE_TYPE) !== 0) {
-            renderer.write(this.updates, nid, NpcInfoProt.CHANGE_TYPE);
+        if ((masks & NpcInfoProt.DAMAGE2) !== 0) {
+            renderer.write(this.updates, nid, NpcInfoProt.DAMAGE2);
         }
         if ((masks & NpcInfoProt.SPOT_ANIM) !== 0) {
             renderer.write(this.updates, nid, NpcInfoProt.SPOT_ANIM);
         }
-        if ((masks & NpcInfoProt.FACE_COORD) !== 0) {
-            renderer.write(this.updates, nid, NpcInfoProt.FACE_COORD);
+        if ((masks & NpcInfoProt.CHANGE_TYPE) !== 0) {
+            renderer.write(this.updates, nid, NpcInfoProt.CHANGE_TYPE);
+        }
+        if ((masks & NpcInfoProt.FACE_ENTITY) !== 0) {
+            renderer.write(this.updates, nid, NpcInfoProt.FACE_ENTITY);
+        }
+        if ((masks & NpcInfoProt.ANIM) !== 0) {
+            renderer.write(this.updates, nid, NpcInfoProt.ANIM);
         }
     }
 

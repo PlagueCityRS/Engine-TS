@@ -7,7 +7,7 @@ export default class MidiJingleEncoder extends ServerGameMessageEncoder<MidiJing
     prot = ServerGameProt.MIDI_JINGLE;
 
     encode(buf: Packet, message: MidiJingle): void {
-        buf.p2(message.id);
-        buf.p2(message.delay);
+        buf.p2_alt3(message.delay);
+        buf.p2_alt1(message.id);
     }
 }

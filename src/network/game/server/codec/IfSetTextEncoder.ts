@@ -7,7 +7,7 @@ export default class IfSetTextEncoder extends ServerGameMessageEncoder<IfSetText
     prot = ServerGameProt.IF_SETTEXT;
 
     encode(buf: Packet, message: IfSetText): void {
-        buf.p2(message.component);
         buf.pjstr(message.text);
+        buf.p2_alt1(message.component);
     }
 }

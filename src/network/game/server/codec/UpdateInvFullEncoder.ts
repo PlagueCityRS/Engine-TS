@@ -33,14 +33,14 @@ export default class UpdateInvFullEncoder extends ServerGameMessageEncoder<Updat
                 buf.p2(obj.id + 1);
 
                 if (obj.count >= 255) {
-                    buf.p1(255);
+                    buf.p1_alt1(255);
                     buf.p4(obj.count);
                 } else {
-                    buf.p1(obj.count);
+                    buf.p1_alt1(obj.count);
                 }
             } else {
                 buf.p2(0);
-                buf.p1(0);
+                buf.p1_alt1(0);
             }
         }
     }

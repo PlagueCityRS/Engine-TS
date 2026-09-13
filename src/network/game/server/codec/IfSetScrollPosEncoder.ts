@@ -7,7 +7,7 @@ export default class IfSetScrollPosEncoder extends ServerGameMessageEncoder<IfSe
     prot = ServerGameProt.IF_SETSCROLLPOS;
 
     encode(buf: Packet, message: IfSetScrollPos): void {
+        buf.p2_alt2(message.y);
         buf.p2(message.component);
-        buf.p2(message.y);
     }
 }
