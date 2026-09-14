@@ -44,8 +44,6 @@ export default class InvButtonDecoder extends ClientGameMessageDecoder<InvButton
                 break;
         }
 
-        console.log(`InvButtonDecoder: op=${this.op}, obj=${obj}, slot=${slot}, com=${com}`);
-
         return new InvButton(this.op, obj, slot, com);
     }
 }

@@ -14,8 +14,6 @@ export default class OpHeldUDecoder extends ClientGameMessageDecoder<OpHeldU> {
         const slot = buf.g2_alt2();
         const obj = buf.g2_alt1();
 
-        //console.log(`OpHeldUDecoder: obj=${obj}, slot=${slot}, com=${com}, useObj=${useObj}, useSlot=${useSlot}, useCom=${useCom}`);
-
         return new OpHeldU(obj, slot, com, useObj, useSlot, useCom);
     }
 }
