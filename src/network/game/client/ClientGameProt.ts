@@ -83,7 +83,7 @@ export default class ClientGameProt {
     static readonly RESUME_PAUSEBUTTON = new ClientGameProt(154, 2);
     static readonly CLOSE_MODAL = new ClientGameProt(211, 0);
     static readonly RESUME_P_COUNTDIALOG = new ClientGameProt(180, 4);
-    static readonly TUT_CLICKSIDE = new ClientGameProt(146, 1);
+    static readonly TUT_CLICKSIDE = new ClientGameProt(225, 1);
 
     static readonly MAP_BUILD_COMPLETE = new ClientGameProt(210, 0);
     static readonly MOVE_OPCLICK = new ClientGameProt(216, -1);
