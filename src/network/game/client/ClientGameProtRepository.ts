@@ -10,7 +10,7 @@ import FriendListAddDecoder from '#/network/game/client/codec/FriendListAddDecod
 import FriendListDelDecoder from '#/network/game/client/codec/FriendListDelDecoder.js';
 import IdleTimerDecoder from '#/network/game/client/codec/IdleTimerDecoder.js';
 import IfButtonDecoder from '#/network/game/client/codec/IfButtonDecoder.js';
-// import IdkSaveDesignDecoder from '#/network/game/client/codec/IdkSaveDesignDecoder.js';
+import IdkSaveDesignDecoder from '#/network/game/client/codec/IdkSaveDesignDecoder.js';
 import IgnoreListAddDecoder from '#/network/game/client/codec/IgnoreListAddDecoder.js';
 import IgnoreListDelDecoder from '#/network/game/client/codec/IgnoreListDelDecoder.js';
 // import InvButtonDDecoder from '#/network/game/client/codec/InvButtonDDecoder.js';
@@ -44,7 +44,7 @@ import FriendListAddHandler from '#/network/game/client/handler/FriendListAddHan
 import FriendListDelHandler from '#/network/game/client/handler/FriendListDelHandler.js';
 import IdleTimerHandler from '#/network/game/client/handler/IdleTimerHandler.js';
 import IfButtonHandler from '#/network/game/client/handler/IfButtonHandler.js';
-// import IdkSaveDesignHandler from '#/network/game/client/handler/IdkSaveDesignHandler.js';
+import IdkSaveDesignHandler from '#/network/game/client/handler/IdkSaveDesignHandler.js';
 import IgnoreListAddHandler from '#/network/game/client/handler/IgnoreListAddHandler.js';
 import IgnoreListDelHandler from '#/network/game/client/handler/IgnoreListDelHandler.js';
 // import InvButtonDHandler from '#/network/game/client/handler/InvButtonDHandler.js';
@@ -111,7 +111,7 @@ class ClientGameProtRepository {
         this.bind(new FriendListDelDecoder(), new FriendListDelHandler());
         this.bind(new IdleTimerDecoder(), new IdleTimerHandler());
         this.bind(new IfButtonDecoder(), new IfButtonHandler());
-        // this.bind(new IdkSaveDesignDecoder(), new IdkSaveDesignHandler());
+        this.bind(new IdkSaveDesignDecoder(), new IdkSaveDesignHandler());
         this.bind(new IgnoreListAddDecoder(), new IgnoreListAddHandler());
         this.bind(new IgnoreListDelDecoder(), new IgnoreListDelHandler());
         this.bind(new InvButtonDecoder(ClientGameProt.INV_BUTTON1, 1), new InvButtonHandler());
