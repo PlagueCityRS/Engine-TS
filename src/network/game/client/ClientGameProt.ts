@@ -47,7 +47,7 @@ export default class ClientGameProt {
     static readonly OPNPC4 = new ClientGameProt(16, 2);
     static readonly OPNPC5 = new ClientGameProt(158, 2);
     // static readonly OPNPCT = new ClientGameProt(108, 4);
-    // static readonly OPNPCU = new ClientGameProt(160, 8);
+    static readonly OPNPCU = new ClientGameProt(48, 8);
 
     static readonly OPLOC1 = new ClientGameProt(9, 6);
     static readonly OPLOC2 = new ClientGameProt(102, 6);
