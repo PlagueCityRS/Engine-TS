@@ -98,7 +98,7 @@ export default class ClientGameProt {
     static readonly FRIENDLIST_DEL = new ClientGameProt(203, 8);
     static readonly FRIENDLIST_ADD = new ClientGameProt(235, 8);
     static readonly CLIENT_CHEAT = new ClientGameProt(34, -1);
-    static readonly MESSAGE_PUBLIC = new ClientGameProt(156, -1);
+    static readonly MESSAGE_PUBLIC = new ClientGameProt(169, -1);
     static readonly MOVE_GAMECLICK = new ClientGameProt(246, -1);
 
     constructor(

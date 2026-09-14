@@ -21,7 +21,7 @@ export default class MessagePublicHandler extends ClientGameMessageHandler<Messa
         }
 
         const buf: Packet = Packet.alloc(0);
-        buf.pdata(input, 0, input.length);
+        buf.pdata_alt1(input, 0, input.length);
         buf.pos = 0;
         const unpack: string = WordPack.unpack(buf, input.length);
         buf.release();
