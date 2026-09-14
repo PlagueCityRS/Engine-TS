@@ -90,13 +90,13 @@ export default class ClientGameProt {
     static readonly REPORT_ABUSE = new ClientGameProt(3, 10); // todo: rename to SEND_SNAPSHOT
     static readonly MOVE_MINIMAPCLICK = new ClientGameProt(147, -1);
     static readonly INV_BUTTOND = new ClientGameProt(253, 7);
-    static readonly IGNORELIST_DEL = new ClientGameProt(251, 8);
-    static readonly IGNORELIST_ADD = new ClientGameProt(192, 8);
+    static readonly IGNORELIST_DEL = new ClientGameProt(146, 8);
+    static readonly IGNORELIST_ADD = new ClientGameProt(71, 8);
     static readonly IDK_SAVEDESIGN = new ClientGameProt(27, 13);
     static readonly CHAT_SETMODE = new ClientGameProt(124, 3);
     static readonly MESSAGE_PRIVATE = new ClientGameProt(107, -1);
-    static readonly FRIENDLIST_DEL = new ClientGameProt(203, 8);
-    static readonly FRIENDLIST_ADD = new ClientGameProt(235, 8);
+    static readonly FRIENDLIST_DEL = new ClientGameProt(223, 8);
+    static readonly FRIENDLIST_ADD = new ClientGameProt(167, 8);
     static readonly CLIENT_CHEAT = new ClientGameProt(34, -1);
     static readonly MESSAGE_PUBLIC = new ClientGameProt(169, -1);
     static readonly MOVE_GAMECLICK = new ClientGameProt(246, -1);
