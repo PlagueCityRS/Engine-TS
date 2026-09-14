@@ -87,7 +87,7 @@ export default class ClientGameProt {
 
     static readonly MAP_BUILD_COMPLETE = new ClientGameProt(210, 0);
     static readonly MOVE_OPCLICK = new ClientGameProt(216, -1);
-    static readonly REPORT_ABUSE = new ClientGameProt(94, 10); // todo: rename to SEND_SNAPSHOT
+    static readonly REPORT_ABUSE = new ClientGameProt(3, 10); // todo: rename to SEND_SNAPSHOT
     static readonly MOVE_MINIMAPCLICK = new ClientGameProt(147, -1);
     static readonly INV_BUTTOND = new ClientGameProt(253, 7);
     static readonly IGNORELIST_DEL = new ClientGameProt(251, 8);
