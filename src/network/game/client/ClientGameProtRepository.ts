@@ -3,7 +3,7 @@ import ClientGameMessageDecoder from '#/network/game/client/ClientGameMessageDec
 import ClientGameMessageHandler from '#/network/game/client/ClientGameMessageHandler.js';
 import ClientGameMessage from '#/network/game/client/ClientGameMessage.js';
 
-// import ChatSetModeDecoder from '#/network/game/client/codec/ChatSetModeDecoder.js';
+import ChatSetModeDecoder from '#/network/game/client/codec/ChatSetModeDecoder.js';
 // import ClientCheatDecoder from '#/network/game/client/codec/ClientCheatDecoder.js';
 // import CloseModalDecoder from '#/network/game/client/codec/CloseModalDecoder.js';
 // import FriendListAddDecoder from '#/network/game/client/codec/FriendListAddDecoder.js';
@@ -37,7 +37,7 @@ import OpNpcUDecoder from '#/network/game/client/codec/OpNpcUDecoder.js';
 import ResumePauseButtonDecoder from '#/network/game/client/codec/ResumePauseButtonDecoder.js';
 // import ResumePCountDialogDecoder from '#/network/game/client/codec/ResumePCountDialogDecoder.js';
 // import TutClickSideDecoder from '#/network/game/client/codec/TutClickSideDecoder.js';
-// import ChatSetModeHandler from '#/network/game/client/handler/ChatSetModeHandler.js';
+import ChatSetModeHandler from '#/network/game/client/handler/ChatSetModeHandler.js';
 // import ClientCheatHandler from '#/network/game/client/handler/ClientCheatHandler.js';
 // import CloseModalHandler from '#/network/game/client/handler/CloseModalHandler.js';
 // import FriendListAddHandler from '#/network/game/client/handler/FriendListAddHandler.js';
@@ -163,7 +163,7 @@ class ClientGameProtRepository {
         this.bind(new ResumePauseButtonDecoder(), new ResumePauseButtonHandler());
         // this.bind(new ResumePCountDialogDecoder(), new ResumePCountDialogHandler());
         // this.bind(new TutClickSideDecoder(), new TutClickSideHandler());
-        // this.bind(new ChatSetModeDecoder(), new ChatSetModeHandler());
+        this.bind(new ChatSetModeDecoder(), new ChatSetModeHandler());
         // this.bind(new ReportAbuseDecoder(), new ReportAbuseHandler());
         this.bind(new EventCameraPositionDecoder(), new EventCameraPositionHandler());
         this.bind(new EventAppletFocusDecoder(), new EventAppletFocusHandler());

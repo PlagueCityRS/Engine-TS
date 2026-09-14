@@ -93,7 +93,7 @@ export default class ClientGameProt {
     static readonly IGNORELIST_DEL = new ClientGameProt(251, 8);
     static readonly IGNORELIST_ADD = new ClientGameProt(192, 8);
     static readonly IDK_SAVEDESIGN = new ClientGameProt(27, 13);
-    static readonly CHAT_SETMODE = new ClientGameProt(161, 3);
+    static readonly CHAT_SETMODE = new ClientGameProt(124, 3);
     static readonly MESSAGE_PRIVATE = new ClientGameProt(107, -1);
     static readonly FRIENDLIST_DEL = new ClientGameProt(203, 8);
     static readonly FRIENDLIST_ADD = new ClientGameProt(235, 8);
