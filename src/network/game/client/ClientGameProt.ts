@@ -33,11 +33,11 @@ export default class ClientGameProt {
     // static readonly ANTICHEAT_CYCLELOGIC6 = new ClientGameProt(255, 1);
     // static readonly ANTICHEAT_CYCLELOGIC7 = new ClientGameProt(232, 0);
 
-    static readonly OPOBJ1 = new ClientGameProt(97, 6);
-    static readonly OPOBJ2 = new ClientGameProt(4, 6);
-    static readonly OPOBJ3 = new ClientGameProt(110, 6);
-    static readonly OPOBJ4 = new ClientGameProt(147, 6);
-    static readonly OPOBJ5 = new ClientGameProt(22, 6);
+    static readonly OPOBJ1 = new ClientGameProt(41, 6);
+    static readonly OPOBJ2 = new ClientGameProt(12, 6);
+    static readonly OPOBJ3 = new ClientGameProt(105, 6);
+    static readonly OPOBJ4 = new ClientGameProt(143, 6);
+    static readonly OPOBJ5 = new ClientGameProt(57, 6);
     static readonly OPOBJT = new ClientGameProt(241, 8);
     static readonly OPOBJU = new ClientGameProt(55, 12);
 
