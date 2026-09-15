@@ -14,6 +14,7 @@ export default class ClientGameProt {
     static readonly UNK1 = new ClientGameProt(193, 4); // in move npcs method
     static readonly UNK2 = new ClientGameProt(1, 2); // in game loop under handleinputkey
     static readonly UNK3 = new ClientGameProt(182, 0); // in do action before invbutton4
+    // static readonly UNK4 = new ClientGameProt(134, 2); // in do action before invbutton4
 
     // static readonly ANTICHEAT_OPLOGIC1 = new ClientGameProt(195, 4);
     // static readonly ANTICHEAT_OPLOGIC2 = new ClientGameProt(81, 2);
@@ -57,13 +58,13 @@ export default class ClientGameProt {
     static readonly OPLOCT = new ClientGameProt(90, 8);
     static readonly OPLOCU = new ClientGameProt(18, 12);
 
-    // static readonly OPPLAYER1 = new ClientGameProt(220, 2);
-    // static readonly OPPLAYER2 = new ClientGameProt(51, 2);
-    // static readonly OPPLAYER3 = new ClientGameProt(13, 2);
-    // static readonly OPPLAYER4 = new ClientGameProt(189, 2);
-    // static readonly OPPLAYER5 = new ClientGameProt(69, 2);
-    // static readonly OPPLAYERT = new ClientGameProt(138, 4);
-    // static readonly OPPLAYERU = new ClientGameProt(16, 8);
+    static readonly OPPLAYER1 = new ClientGameProt(99, 2);
+    static readonly OPPLAYER2 = new ClientGameProt(54, 2);
+    static readonly OPPLAYER3 = new ClientGameProt(134, 2);
+    static readonly OPPLAYER4 = new ClientGameProt(162, 2);
+    static readonly OPPLAYER5 = new ClientGameProt(190, 2);
+    static readonly OPPLAYERT = new ClientGameProt(170, 4);
+    static readonly OPPLAYERU = new ClientGameProt(189, 8);
 
     static readonly OPHELD1 = new ClientGameProt(140, 6);
     static readonly OPHELD2 = new ClientGameProt(17, 6);
