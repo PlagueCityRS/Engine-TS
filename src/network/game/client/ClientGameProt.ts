@@ -14,7 +14,7 @@ export default class ClientGameProt {
     static readonly UNK1 = new ClientGameProt(193, 4); // in move npcs method
     static readonly UNK2 = new ClientGameProt(1, 2); // in game loop under handleinputkey
     static readonly UNK3 = new ClientGameProt(182, 0); // in do action before invbutton4
-    // static readonly UNK4 = new ClientGameProt(134, 2); // in do action before invbutton4
+    static readonly UNK4 = new ClientGameProt(164, 3); // in do action before loc examine
 
     // static readonly ANTICHEAT_OPLOGIC1 = new ClientGameProt(195, 4);
     // static readonly ANTICHEAT_OPLOGIC2 = new ClientGameProt(81, 2);
@@ -98,7 +98,7 @@ export default class ClientGameProt {
     static readonly MESSAGE_PRIVATE = new ClientGameProt(107, -1);
     static readonly FRIENDLIST_DEL = new ClientGameProt(223, 8);
     static readonly FRIENDLIST_ADD = new ClientGameProt(167, 8);
-    static readonly CLIENT_CHEAT = new ClientGameProt(34, -1);
+    static readonly CLIENT_CHEAT = new ClientGameProt(230, -1);
     static readonly MESSAGE_PUBLIC = new ClientGameProt(169, -1);
     static readonly MOVE_GAMECLICK = new ClientGameProt(246, -1);
 

@@ -4,7 +4,7 @@ import ClientGameMessageHandler from '#/network/game/client/ClientGameMessageHan
 import ClientGameMessage from '#/network/game/client/ClientGameMessage.js';
 
 import ChatSetModeDecoder from '#/network/game/client/codec/ChatSetModeDecoder.js';
-// import ClientCheatDecoder from '#/network/game/client/codec/ClientCheatDecoder.js';
+import ClientCheatDecoder from '#/network/game/client/codec/ClientCheatDecoder.js';
 import CloseModalDecoder from '#/network/game/client/codec/CloseModalDecoder.js';
 import FriendListAddDecoder from '#/network/game/client/codec/FriendListAddDecoder.js';
 import FriendListDelDecoder from '#/network/game/client/codec/FriendListDelDecoder.js';
@@ -38,7 +38,7 @@ import ResumePauseButtonDecoder from '#/network/game/client/codec/ResumePauseBut
 import ResumePCountDialogDecoder from '#/network/game/client/codec/ResumePCountDialogDecoder.js';
 import TutClickSideDecoder from '#/network/game/client/codec/TutClickSideDecoder.js';
 import ChatSetModeHandler from '#/network/game/client/handler/ChatSetModeHandler.js';
-// import ClientCheatHandler from '#/network/game/client/handler/ClientCheatHandler.js';
+import ClientCheatHandler from '#/network/game/client/handler/ClientCheatHandler.js';
 import CloseModalHandler from '#/network/game/client/handler/CloseModalHandler.js';
 import FriendListAddHandler from '#/network/game/client/handler/FriendListAddHandler.js';
 import FriendListDelHandler from '#/network/game/client/handler/FriendListDelHandler.js';
@@ -105,7 +105,7 @@ class ClientGameProtRepository {
     }
 
     constructor() {
-        // this.bind(new ClientCheatDecoder(), new ClientCheatHandler());
+        this.bind(new ClientCheatDecoder(), new ClientCheatHandler());
         this.bind(new CloseModalDecoder(), new CloseModalHandler());
         this.bind(new FriendListAddDecoder(), new FriendListAddHandler());
         this.bind(new FriendListDelDecoder(), new FriendListDelHandler());
