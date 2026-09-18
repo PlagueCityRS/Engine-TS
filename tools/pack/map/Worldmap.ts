@@ -518,109 +518,145 @@ export async function packWorldmap() {
     floorcol.p2(FloType.configs.length);
 
     const refColors = [
-        [0x00000038, 0x00847776], // debugname=cliff overlay=true occlude=true rgb=0xaaaaaa
-        [0x00000016, 0x00504746], // debugname=cliff2 overlay=true occlude=true rgb=0x444444
-        [0x00000022, 0x00564d4d], // debugname=cliff3 overlay=true occlude=true rgb=0x666666
-        [0x0000002d, 0x00766a69], // debugname=cliff4 overlay=true occlude=true rgb=0x888888
-        [0x00000000, 0x003a1c0c], // debugname=woodenfloor overlay=true occlude=true rgb=0x000000 texture=planks
-        [0x00000000, 0x004f648d], // debugname=water overlay=true occlude=true rgb=0x000000 texture=water
-        [0x00000000, 0x001f6248], // debugname=gungywater overlay=true occlude=true rgb=0x000000 texture=gungywater
-        [0x0000001e, 0x00504746], // debugname=greyroof overlay=true occlude=true rgb=0x5b5b5b
-        [0x01500053, 0x00bbb9b2], // debugname=desertroof overlay=true occlude=true rgb=0xfffff5
-        [0x0000001a, 0x00463f3f], // debugname=road overlay=true occlude=true rgb=0x505050
-        [0x0000000b, 0x00100f0f], // debugname=darkstone overlay=true occlude=true rgb=0x222222
-        [0x00000000, 0x003f3934], // debugname=pebblefloor overlay=true occlude=true rgb=0x000000 texture=pebblefloor
-        [0x0000a822, 0x0095342f], // debugname=redfloor overlay=true occlude=true rgb=0x993333
-        [0x0090ec0c, 0x00503911], // debugname=mudfloor overlay=true occlude=true rgb=0x3d2b0b
-        [0x0090ec0c, 0x003b250c], // debugname=mudfloor_bump overlay=true occlude=true rgb=0x3d2b0b
-        [0x00715411, 0x00674204], // debugname=mudfloor2 overlay=true occlude=true rgb=0x663300
-        [0x00715411, 0x004f3a03], // debugname=mudfloor2_bump overlay=true occlude=true rgb=0x663300
-        [0x03815422, 0x0012068c], // debugname=bluefloor overlay=true occlude=true rgb=0x0000cc
-        [0x00000000, 0x00e15f15], // debugname=lava overlay=true occlude=true rgb=0x000000 texture=lava
-        [0x00000000, 0x004d4d4f], // debugname=marble overlay=true occlude=true rgb=0x000000 texture=marble
-        [0x00915419, 0x00887006], // debugname=sandfloor overlay=true occlude=true rgb=0x996600
-        [0x00a09419, 0x00544a24], // debugname=l_brownfloor1 overlay=true occlude=true rgb=0x6d5b2b
-        [0x00a09419, 0x00605528], // debugname=l_brownfloor1_bump overlay=true occlude=true rgb=0x6d5b2b
-        [0x00000000, 0x0038322d], // debugname=cliff_textured overlay=true occlude=true rgb=0x000000 texture=rockwall
-        [0x00b09435, 0x00c09757], // debugname=sand_cliff overlay=true occlude=true rgb=0xcbba76
-        [0x00c06821, 0x00786d42], // debugname=sand_rock overlay=true occlude=true rgb=0x827944
-        [0x00000000, 0x00282011], // debugname=oldbrick overlay=true occlude=true rgb=0x000000 texture=mossybricks
-        [0x00000000, 0x00595650], // debugname=brick overlay=true occlude=true rgb=0x000000 texture=wall
-        [0x01611c14, 0x0036760f], // debugname=grass overlay=true occlude=true rgb=0x35720a
-        [0x0150004f, 0x00aea5a4], // debugname=ice_overlay overlay=true occlude=true rgb=0xeeeeee
-        [0x00a11012, 0x003b3507], // debugname=upass_floor overlay=true occlude=true rgb=0x654d0b
-        [0x00000000, 0x00363029], // debugname=stone_texture overlay=true occlude=true rgb=0x000000 texture=mossy
-        [0x0150004a, 0x00b6babe], // debugname=ice_overlay_blue overlay=true occlude=true rgb=0xc9ddf7
-        [0x0000001a, 0x003e3836], // debugname=road_bridge overlay=true occlude=true rgb=0x505050
-        [0x00000000, 0x003a1c0c], // debugname=woodenfloor_bridge overlay=true occlude=true rgb=0x000000 texture=planks
-        [0x0080f013, 0x005b4d14], // debugname=mud5_overlay overlay=true occlude=true rgb=0x664411
-        [0x00000000, 0x00060404], // debugname=black overlay=true occlude=true rgb=0x000000
-        [0x03106027, 0x0058697c], // debugname=lightblue overlay=true occlude=true rgb=0x557799
-        [0x00000000, 0x00799ed7], // debugname=water_fountain overlay=true occlude=true rgb=0x000000 texture=fountain
-        [0x03808427, 0x00404995], // debugname=bluefloor2 overlay=true occlude=true rgb=0x4749a3
-        [0x03107420, 0x00324a5b], // debugname=waterfallblue overlay=true occlude=true rgb=0x3f6181
+        [0x00000038, 0x00988b8a], // debugname=cliff overlay=true occlude=true rgb=0xaaaaaa
+        [0x00000016, 0x002e2929], // debugname=cliff2 overlay=true occlude=true rgb=0x444444
+        [0x00000022, 0x00615856], // debugname=cliff3 overlay=true occlude=true rgb=0x666666
+        [0x0000002d, 0x007c6f6f], // debugname=cliff4 overlay=true occlude=true rgb=0x888888
+        [0x00000000, 0x003b1c0c], // debugname=woodenfloor overlay=true occlude=true rgb=0x000000 texture=
+        [0x00000000, 0x0050648d], // debugname=water overlay=true occlude=true rgb=0x000000 texture=
+        [0x00000000, 0x001f6348], // debugname=gungywater overlay=true occlude=true rgb=0x000000 texture=
+        [0x0000001e, 0x003e3837], // debugname=greyroof overlay=true occlude=true rgb=0x5b5b5b
+        [0x01500053, 0x00c3c4bb], // debugname=desertroof overlay=true occlude=true rgb=0xfffff5
+        [0x0000001a, 0x00393434], // debugname=road overlay=true occlude=true rgb=0x505050
+        [0x0000000b, 0x00332d2d], // debugname=darkstone overlay=true occlude=true rgb=0x222222
+        [0x00000000, 0x003f3934], // debugname=pebblefloor overlay=true occlude=true rgb=0x000000 texture=
+        [0x0000a822, 0x00802d29], // debugname=redfloor overlay=true occlude=true rgb=0x993333
+        [0x0090ec0c, 0x004a390f], // debugname=mudfloor overlay=true occlude=true rgb=0x3d2b0b
+        [0x0090ec0c, 0x001b1409], // debugname=mudfloor_bump overlay=true occlude=true rgb=0x3d2b0b
+        [0x00715411, 0x006e4804], // debugname=mudfloor2 overlay=true occlude=true rgb=0x663300
+        [0x00715411, 0x005b3b03], // debugname=mudfloor2_bump overlay=true occlude=true rgb=0x663300
+        [0x03815422, 0x001d0482], // debugname=bluefloor overlay=true occlude=true rgb=0x0000cc
+        [0x00000000, 0x00e35f15], // debugname=lava overlay=true occlude=true rgb=0x000000 texture=
+        [0x00000000, 0x004e4d50], // debugname=marble overlay=true occlude=true rgb=0x000000 texture=
+        [0x00915419, 0x00725e04], // debugname=sandfloor overlay=true occlude=true rgb=0x996600
+        [0x00a09419, 0x006b5f2e], // debugname=l_brownfloor1 overlay=true occlude=true rgb=0x6d5b2b
+        [0x00a09419, 0x00716a31], // debugname=l_brownfloor1_bump overlay=true occlude=true rgb=0x6d5b2b
+        [0x00000000, 0x00a39570], // debugname=cliff_textured overlay=true occlude=true rgb=0x000000 texture=
+        [0x00b09435, 0x00afa338], // debugname=sand_cliff overlay=true occlude=true rgb=0xcbba76
+        [0x00c06821, 0x00787243], // debugname=sand_rock overlay=true occlude=true rgb=0x827944
+        [0x00000000, 0x00282111], // debugname=oldbrick overlay=true occlude=true rgb=0x000000 texture=
+        [0x00000000, 0x00595650], // debugname=brick overlay=true occlude=true rgb=0x000000 texture=
+        [0x01611c14, 0x0028560a], // debugname=grass overlay=true occlude=true rgb=0x35720a
+        [0x0150004f, 0x00beb7b6], // debugname=ice_overlay overlay=true occlude=true rgb=0xeeeeee
+        [0x00a11012, 0x0043340e], // debugname=upass_floor overlay=true occlude=true rgb=0x654d0b
+        [0x00000000, 0x0036302a], // debugname=stone_texture overlay=true occlude=true rgb=0x000000 texture=
+        [0x0150004a, 0x0094a5b7], // debugname=ice_overlay_blue overlay=true occlude=true rgb=0xc9ddf7
+        [0x0000001a, 0x00373232], // debugname=road_bridge overlay=true occlude=true rgb=0x505050
+        [0x00000000, 0x003b1c0c], // debugname=woodenfloor_bridge overlay=true occlude=true rgb=0x000000 texture=
+        [0x0080f013, 0x00613a0c], // debugname=mud5_overlay overlay=true occlude=true rgb=0x664411
+        [0x00000000, 0x00100f0f], // debugname=black overlay=true occlude=true rgb=0x000000
+        [0x03106027, 0x0046617d], // debugname=lightblue overlay=true occlude=true rgb=0x557799
+        [0x00000000, 0x0079a0d7], // debugname=water_fountain overlay=true occlude=true rgb=0x000000 texture=
+        [0x03808427, 0x003b367d], // debugname=bluefloor2 overlay=true occlude=true rgb=0x4749a3
+        [0x03107420, 0x00315c71], // debugname=waterfallblue overlay=true occlude=true rgb=0x3f6181
         [0xff21542a, 0x00503000], // debugname=invisible overlay=true occlude=false rgb=0xff00ff
         [0xff21542a, 0x00503000], // debugname=invisible_occ overlay=true occlude=true rgb=0xff00ff
-        [0x0000001a, 0x0046403f], // debugname=road_no_occlude overlay=true occlude=false rgb=0x505050
-        [0x00000000, 0x003a1c0c], // debugname=woodenfloor_no_occlude overlay=true occlude=false rgb=0x000000 texture=planks
-        [0x00000000, 0x00282011], // debugname=oldbrick_no_occlude overlay=true occlude=false rgb=0x000000 texture=mossybricks
-        [0x00000000, 0x00595650], // debugname=brick_no_occlude overlay=true occlude=false rgb=0x000000 texture=wall
-        [0x01611c14, 0x00154301], // debugname=grassland overlay=false occlude=true rgb=0x35720a
-        [0x01011413, 0x002c3306], // debugname=muddygrass overlay=false occlude=true rgb=0x58680b
-        [0x00c11c15, 0x0064630c], // debugname=vmuddygrass overlay=false occlude=true rgb=0x78680b
-        [0x0141181f, 0x00569006], // debugname=lightgrass overlay=false occlude=true rgb=0x6cac10
-        [0x0110ac21, 0x00747a26], // debugname=sandygrass overlay=false occlude=true rgb=0x819531
-        [0x00d10c0f, 0x003f3407], // debugname=swamp overlay=false occlude=true rgb=0x55520a
-        [0x0250e011, 0x0014412b], // debugname=swamp2 overlay=false occlude=true rgb=0x125841
-        [0x00000027, 0x00544b4a], // debugname=lightrock overlay=false occlude=true rgb=0x767676
-        [0x00000019, 0x00423b3b], // debugname=darkrock overlay=false occlude=true rgb=0x4d4d4d
-        [0x0000000f, 0x001b1717], // debugname=verydarkrock overlay=false occlude=true rgb=0x2e2e2e
-        [0x0150004f, 0x00aea4a4], // debugname=ice overlay=false occlude=false rgb=0xeeeeee
-        [0x01500049, 0x009699a2], // debugname=blueice overlay=false occlude=true rgb=0xd1d6e7
-        [0x01500049, 0x0097a498], // debugname=greenice overlay=false occlude=true rgb=0xd1e7d6
-        [0x00c0742b, 0x00847349], // debugname=desert1 overlay=false occlude=true rgb=0xada055
-        [0x00b0a436, 0x00cdbe41], // debugname=desert2 overlay=false occlude=true rgb=0xd0c074
-        [0x0090ec0c, 0x004a3817], // debugname=mud1 overlay=false occlude=true rgb=0x3d2b0b
-        [0x0090b415, 0x003c351a], // debugname=mud2 overlay=false occlude=true rgb=0x644e1e
-        [0x00a11012, 0x0045310f], // debugname=mud3 overlay=false occlude=true rgb=0x654d0b
-        [0x00715411, 0x005b3303], // debugname=mud4 overlay=false occlude=true rgb=0x663300
-        [0x0080f013, 0x00382906], // debugname=mud5 overlay=false occlude=false rgb=0x664411
-        [0x00b09435, 0x00a39845], // debugname=sand overlay=false occlude=true rgb=0xcbba76
-        [0x0090b415, 0x005b431c], // debugname=mud2_skew overlay=false occlude=false rgb=0x644e1e
-        [0x00a11012, 0x004a3003], // debugname=mud3_skew overlay=false occlude=false rgb=0x654d0b
-        [0x00715411, 0x004f2d03], // debugname=mud4_skew overlay=false occlude=false rgb=0x663300
+        [0x0000001a, 0x004e4746], // debugname=road_no_occlude overlay=true occlude=false rgb=0x505050
+        [0x00000000, 0x003b1c0c], // debugname=woodenfloor_no_occlude overlay=true occlude=false rgb=0x000000 texture=
+        [0x00000000, 0x00282111], // debugname=oldbrick_no_occlude overlay=true occlude=false rgb=0x000000 texture=
+        [0x00000000, 0x00595650], // debugname=brick_no_occlude overlay=true occlude=false rgb=0x000000 texture=
+        [0x01611c14, 0x0037760f], // debugname=grassland overlay=false occlude=true rgb=0x35720a
+        [0x01011413, 0x004f640c], // debugname=muddygrass overlay=false occlude=true rgb=0x58680b
+        [0x00c11c15, 0x0076750f], // debugname=vmuddygrass overlay=false occlude=true rgb=0x78680b
+        [0x0141181f, 0x0059a315], // debugname=lightgrass overlay=false occlude=true rgb=0x6cac10
+        [0x0110ac21, 0x00777d36], // debugname=sandygrass overlay=false occlude=true rgb=0x819531
+        [0x00d10c0f, 0x00474109], // debugname=swamp overlay=false occlude=true rgb=0x55520a
+        [0x0250e011, 0x000a3124], // debugname=swamp2 overlay=false occlude=true rgb=0x125841
+        [0x00000027, 0x005c5353], // debugname=lightrock overlay=false occlude=true rgb=0x767676
+        [0x00000019, 0x00352f2f], // debugname=darkrock overlay=false occlude=true rgb=0x4d4d4d
+        [0x0000000f, 0x003c3636], // debugname=verydarkrock overlay=false occlude=true rgb=0x2e2e2e
+        [0x0150004f, 0x00b0a6a6], // debugname=ice overlay=false occlude=false rgb=0xeeeeee
+        [0x01500049, 0x009a9da6], // debugname=blueice overlay=false occlude=true rgb=0xd1d6e7
+        [0x01500049, 0x00acb6af], // debugname=greenice overlay=false occlude=true rgb=0xd1e7d6
+        [0x00b0a427, 0x009b9a43], // debugname=desert1 overlay=false occlude=true rgb=0xb19a3d
+        [0x00b0a436, 0x00b5ae6f], // debugname=desert2 overlay=false occlude=true rgb=0xd0c074
+        [0x0090ec0c, 0x00453715], // debugname=mud1 overlay=false occlude=true rgb=0x3d2b0b
+        [0x0090b415, 0x003e2a13], // debugname=mud2 overlay=false occlude=true rgb=0x644e1e
+        [0x00a11012, 0x005d4e0b], // debugname=mud3 overlay=false occlude=true rgb=0x654d0b
+        [0x00715411, 0x00673104], // debugname=mud4 overlay=false occlude=true rgb=0x663300
+        [0x0080f013, 0x0052320a], // debugname=mud5 overlay=false occlude=false rgb=0x664411
+        [0x00b09435, 0x00c0be57], // debugname=sand overlay=false occlude=true rgb=0xcbba76
+        [0x0090b415, 0x003c2c1a], // debugname=mud2_skew overlay=false occlude=false rgb=0x644e1e
+        [0x00a11012, 0x00543b12], // debugname=mud3_skew overlay=false occlude=false rgb=0x654d0b
+        [0x00715411, 0x005b2b03], // debugname=mud4_skew overlay=false occlude=false rgb=0x663300
         [0x00000001, 0x00060404], // debugname=black_rock overlay=false occlude=false rgb=0x030303
-        [0x03106027, 0x004b6387], // debugname=dullblue overlay=false occlude=true rgb=0x557799
-        [0xffd06027, 0x00745453], // debugname=purple_pink overlay=false occlude=true rgb=0x995566
-        [0x03106027, 0x00416075], // debugname=lightblue_underlay overlay=false occlude=true rgb=0x557799
-        [0x00b0a82d, 0x00a47a33], // debugname=desert_shadow overlay=true occlude=true rgb=0xc4ac4e
-        [0x0080782f, 0x00816648], // debugname=duel_arena overlay=true occlude=true rgb=0xb79767
-        [0x0080283c, 0x00bfa054], // debugname=duelarena overlay=false occlude=true rgb=0xd9bb93
-        [0x00b06826, 0x00817a38], // debugname=hive overlay=true occlude=true rgb=0x97874f
-        [0x0080a41c, 0x00775032], // debugname=agility overlay=true occlude=true rgb=0x7d5b2b
-        [0x00909012, 0x00483c28], // debugname=brownmud overlay=true occlude=true rgb=0x504020
-        [0x0090301a, 0x003a3529], // debugname=mountain_overlay overlay=true occlude=true rgb=0x5c5444
-        [0x00903014, 0x0028261c], // debugname=mountain_dark_overlay overlay=true occlude=true rgb=0x464034
-        [0x00000000, 0x007c693b], // debugname=elfbrick overlay=true occlude=true rgb=0x000000 texture=elfbrick
-        [0x01203c0f, 0x002c321c], // debugname=elf_wastelands overlay=true occlude=true rgb=0x303525
-        [0x00015407, 0x000a0100], // debugname=dark_red overlay=true occlude=true rgb=0x2d0000
-        [0x0390601d, 0x00322d50], // debugname=grey_blue overlay=true occlude=true rgb=0x423f73
-        [0x00a04417, 0x00605435], // debugname=viking_town_overlay overlay=true occlude=true rgb=0x544d37
-        [0x0090b814, 0x00362811], // debugname=viking_mud_overlay overlay=true occlude=true rgb=0x5e461c
-        [0x00903c0d, 0x000f0e0b], // debugname=viking_cave_overlay overlay=true occlude=true rgb=0x2e2920
-        [0x00909012, 0x002f271a], // debugname=legendssword_cave overlay=true occlude=true rgb=0x504020
-        [0x0090301a, 0x00494133], // debugname=mountain overlay=false occlude=true rgb=0x5c5444
-        [0x01906416, 0x00344e2b], // debugname=darkgrass overlay=false occlude=true rgb=0x38562f
-        [0x00903014, 0x002b251e], // debugname=mountain_dark overlay=false occlude=true rgb=0x464034
-        [0x03108c23, 0x00295163], // debugname=grey_blue_underlay overlay=false occlude=true rgb=0x3e6995
-        [0x00a0c40f, 0x004e4818], // debugname=autumnal overlay=false occlude=true rgb=0x4b3e14
-        [0x00a04419, 0x00443e30], // debugname=viking_town overlay=false occlude=true rgb=0x5c543c
-        [0x00a0440d, 0x001d1b15], // debugname=viking_town_dark overlay=false occlude=true rgb=0x2f2b1f
-        [0x01c0a018, 0x00224f22], // debugname=jungle_green overlay=false occlude=true rgb=0x276d27
-        [0x0150dc13, 0x00466b17], // debugname=jungle_dark_green overlay=false occlude=true rgb=0x396215
-        [0x00a0c011, 0x0055431b], // debugname=mm_town_overlay overlay=true occlude=true rgb=0x544217
-        [0x01203c0f, 0x00303224], // debugname=slayer_tower overlay=true occlude=true rgb=0x303525
-        [0x02605c07, 0x00030704] // debugname=morytania_dark_green overlay=false occlude=true rgb=0x111e1a
+        [0x03106027, 0x00425675], // debugname=dullblue overlay=false occlude=true rgb=0x557799
+        [0xffd06027, 0x006b3e3b], // debugname=purple_pink overlay=false occlude=true rgb=0x995566
+        [0x03106027, 0x003d5e6d], // debugname=lightblue_underlay overlay=false occlude=true rgb=0x557799
+        [0x00b0a82d, 0x00aa7e36], // debugname=desert_shadow overlay=true occlude=true rgb=0xc4ac4e
+        [0x0080782f, 0x008a724d], // debugname=duel_arena overlay=true occlude=true rgb=0xb79767
+        [0x0080283c, 0x00ab9382], // debugname=duelarena overlay=false occlude=true rgb=0xd9bb93
+        [0x00b06826, 0x007d7246], // debugname=hive overlay=true occlude=true rgb=0x97874f
+        [0x0080a41c, 0x0083612a], // debugname=agility overlay=true occlude=true rgb=0x7d5b2b
+        [0x00909012, 0x0043311c], // debugname=brownmud overlay=true occlude=true rgb=0x504020
+        [0x0090301a, 0x00514639], // debugname=mountain_overlay overlay=true occlude=true rgb=0x5c5444
+        [0x00903014, 0x003a342a], // debugname=mountain_dark_overlay overlay=true occlude=true rgb=0x464034
+        [0x00000000, 0x007d693b], // debugname=elfbrick overlay=true occlude=true rgb=0x000000 texture=
+        [0x01203c0f, 0x00161912], // debugname=elf_wastelands overlay=true occlude=true rgb=0x303525
+        [0x00015407, 0x00440601], // debugname=dark_red overlay=true occlude=true rgb=0x2d0000
+        [0x0390601d, 0x0042435d], // debugname=grey_blue overlay=true occlude=true rgb=0x423f73
+        [0x00a04417, 0x004a4434], // debugname=viking_town_overlay overlay=true occlude=true rgb=0x544d37
+        [0x0090b814, 0x00342b15], // debugname=viking_mud_overlay overlay=true occlude=true rgb=0x5e461c
+        [0x00903c0d, 0x00201f1c], // debugname=viking_cave_overlay overlay=true occlude=true rgb=0x2e2920
+        [0x00909012, 0x00342d15], // debugname=legendssword_cave overlay=true occlude=true rgb=0x504020
+        [0x0090301a, 0x00474440], // debugname=mountain overlay=false occlude=true rgb=0x5c5444
+        [0x01906416, 0x002c3828], // debugname=darkgrass overlay=false occlude=true rgb=0x38562f
+        [0x00903014, 0x00494742], // debugname=mountain_dark overlay=false occlude=true rgb=0x464034
+        [0x03108c23, 0x002c4966], // debugname=grey_blue_underlay overlay=false occlude=true rgb=0x3e6995
+        [0x00a0c40f, 0x004a390f], // debugname=autumnal overlay=false occlude=true rgb=0x4b3e14
+        [0x00a04419, 0x005f5444], // debugname=viking_town overlay=false occlude=true rgb=0x5c543c
+        [0x00a0440d, 0x00403d2d], // debugname=viking_town_dark overlay=false occlude=true rgb=0x2f2b1f
+        [0x01c0a018, 0x002d682e], // debugname=jungle_green overlay=false occlude=true rgb=0x276d27
+        [0x0150dc13, 0x0031551b], // debugname=jungle_dark_green overlay=false occlude=true rgb=0x396215
+        [0x00a0c011, 0x00342c0b], // debugname=mm_town_overlay overlay=true occlude=true rgb=0x544217
+        [0x01203c0f, 0x0037402d], // debugname=slayer_tower overlay=true occlude=true rgb=0x303525
+        [0x02605c07, 0x00030706], // debugname=morytania_dark_green overlay=false occlude=true rgb=0x111e1a
+        [0x02c08437, 0x0080a3a9], // debugname=dwarf_glacial_water overlay=true occlude=true rgb=0x83c3ca
+        [0x00000022, 0x00695f5e], // debugname=dwarf_mines_overlay overlay=false occlude=true rgb=0x666666
+        [0x0090581a, 0x00514839], // debugname=elf_light_temple overlay=true occlude=true rgb=0x66593b
+        [0x01903815, 0x00253a21], // debugname=ahoy_town overlay=true occlude=true rgb=0x3a4b35
+        [0x0090cc0d, 0x00231c0a], // debugname=mdaugher_mud overlay=true occlude=true rgb=0x403010
+        [0x0150044b, 0x00b8bcc0], // debugname=mdaugher_water overlay=true occlude=true rgb=0xc9ddf9
+        [0x00e05c0e, 0x003d3c2b], // debugname=moytania_barrow_crypt overlay=true occlude=true rgb=0x383820
+        [0x00000022, 0x00584f4f], // debugname=dwarf_mines overlay=false occlude=true rgb=0x666666
+        [0x00000011, 0x003c3636], // debugname=dwarf_mines_dark overlay=false occlude=true rgb=0x333333
+        [0x0250080e, 0x002d3331], // debugname=dwarf_city overlay=false occlude=true rgb=0x2b2e2d
+        [0x01f0802f, 0x004bae5f], // debugname=morytania_ectoplasm_glow overlay=false occlude=true rgb=0x64bb75
+        [0x01609812, 0x003e611f], // debugname=morytania_barrow_downs overlay=false occlude=true rgb=0x33501e
+        [0xff60e816, 0x00651a15], // debugname=morytania_barrow_crypt_purple overlay=false occlude=true rgb=0x71155c
+        [0x0000001a, 0x00474040], // debugname=dwarf_keldagrim overlay=true occlude=false rgb=0x4f4f4f
+        [0x0000b819, 0x007a2b27], // debugname=dwarf_red overlay=false occlude=true rgb=0x752222
+        [0x00a04419, 0x001d1c15], // debugname=null overlay=true occlude=true rgb=0x5c543c
+        [0x00a0440d, 0x00272723], // debugname=null overlay=true occlude=true rgb=0x2f2b1f
+        [0x00208c16, 0x0043221c], // debugname=abyssal_ground overlay=false occlude=true rgb=0x603028
+        [0x00015408, 0x00400c01], // debugname=abyssal_ground_dark overlay=false occlude=true rgb=0x300000
+        [0x00a03c38, 0x00908866], // debugname=falador_white_overlay overlay=true occlude=true rgb=0xb8b098
+        [0x00a03c38, 0x009a988b], // debugname=falador_white overlay=false occlude=true rgb=0xb8b098
+        [0x00a02c32, 0x00817c73], // debugname=falador_white_darker overlay=false occlude=true rgb=0xa59e89
+        [0x00a14419, 0x00947a06], // debugname=desert_dark overlay=false occlude=true rgb=0x946b03
+        [0x00e01414, 0x003e3e37], // debugname=dwarf_cavewall_floor overlay=true occlude=true rgb=0x404038
+        [0x0200482f, 0x006b977d], // debugname=dagganoth_cave_water overlay=true occlude=true rgb=0x77a785
+        [0x00c06821, 0x00665d49], // debugname=sand_rock_underlay overlay=false occlude=true rgb=0x827944
+        [0x02807836, 0x005faaa7], // debugname=elid_underground_water overlay=true occlude=true rgb=0x82c4b8
+        [0x00e08c09, 0x00151609], // debugname=burgh_village overlay=true occlude=true rgb=0x272710
+        [0x00903010, 0x00211c16], // debugname=road_mid_grey overlay=true occlude=true rgb=0x373229
+        [0x01503810, 0x003d4733], // debugname=dagannoth overlay=true occlude=true rgb=0x303828
+        [0x03800816, 0x00524a49], // debugname=null overlay=true occlude=false rgb=0x404044
+        [0xff21542a, 0x00503000], // debugname=null overlay=true occlude=false rgb=0xff00ff
+        [0xff21542a, 0x00503000], // debugname=null overlay=true occlude=false rgb=0xff00ff
+        [0x00a04c1f, 0x00584632], // debugname=falador_outside overlay=true occlude=true rgb=0x746949
+        [0x0060a42c, 0x00886a3a], // debugname=elid_underground overlay=false occlude=true rgb=0xc08048
+        [0x00000000, 0x00060404] // debugname=mage_black_occlude overlay=false occlude=true rgb=0x000000
     ];
 
     for (let i = 0; i < FloType.configs.length; i++) {
