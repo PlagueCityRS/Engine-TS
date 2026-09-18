@@ -61,7 +61,7 @@ export function packClientSound(cache: FileStream) {
     }
 
     const packed = fs.readFileSync('data/pack/client/sounds');
-    if (Environment.build.verify && !Packet.checkcrc(packed, 0, packed.length, -1491954823)) {
+    if (Environment.build.verify && !Packet.checkcrc(packed, 0, packed.length, -433973353)) {
         throw new Error('sounds checksum mismatch!\nYou can disable this safety check by setting BUILD_VERIFY=false');
     }
 
