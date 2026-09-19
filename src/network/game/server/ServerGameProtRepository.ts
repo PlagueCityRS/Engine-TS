@@ -27,10 +27,10 @@ import IfSetTabActiveEncoder from '#/network/game/server/codec/IfSetTabActiveEnc
 import IfSetTabEncoder from '#/network/game/server/codec/IfSetTabEncoder.js';
 import IfSetTextEncoder from '#/network/game/server/codec/IfSetTextEncoder.js';
 // import LastLoginInfoEncoder from '#/network/game/server/codec/LastLoginInfoEncoder.js';
-// import LocAddChangeEncoder from '#/network/game/server/codec/LocAddChangeEncoder.js';
-// import LocAnimEncoder from '#/network/game/server/codec/LocAnimEncoder.js';
-// import LocDelEncoder from '#/network/game/server/codec/LocDelEncoder.js';
-// import LocMergeEncoder from '#/network/game/server/codec/LocMergeEncoder.js';
+import LocAddChangeEncoder from '#/network/game/server/codec/LocAddChangeEncoder.js';
+import LocAnimEncoder from '#/network/game/server/codec/LocAnimEncoder.js';
+import LocDelEncoder from '#/network/game/server/codec/LocDelEncoder.js';
+import LocMergeEncoder from '#/network/game/server/codec/LocMergeEncoder.js';
 import LogoutEncoder from '#/network/game/server/codec/LogoutEncoder.js';
 import MapAnimEncoder from '#/network/game/server/codec/MapAnimEncoder.js';
 import MapProjAnimEncoder from '#/network/game/server/codec/MapProjAnimEncoder.js';
@@ -40,9 +40,9 @@ import MidiJingleEncoder from '#/network/game/server/codec/MidiJingleEncoder.js'
 import MidiSongEncoder from '#/network/game/server/codec/MidiSongEncoder.js';
 import NpcInfoEncoder from '#/network/game/server/codec/NpcInfoEncoder.js';
 import ObjAddEncoder from '#/network/game/server/codec/ObjAddEncoder.js';
-// import ObjCountEncoder from '#/network/game/server/codec/ObjCountEncoder.js';
-// import ObjDelEncoder from '#/network/game/server/codec/ObjDelEncoder.js';
-// import ObjRevealEncoder from '#/network/game/server/codec/ObjRevealEncoder.js';
+import ObjCountEncoder from '#/network/game/server/codec/ObjCountEncoder.js';
+import ObjDelEncoder from '#/network/game/server/codec/ObjDelEncoder.js';
+import ObjRevealEncoder from '#/network/game/server/codec/ObjRevealEncoder.js';
 import PCountDialogEncoder from '#/network/game/server/codec/PCountDialogEncoder.js';
 import PlayerInfoEncoder from '#/network/game/server/codec/PlayerInfoEncoder.js';
 import RebuildNormalEncoder from '#/network/game/server/codec/RebuildNormalEncoder.js';
@@ -92,10 +92,10 @@ import IfSetTab from '#/network/game/server/model/IfSetTab.js';
 import IfSetTabActive from '#/network/game/server/model/IfSetTabActive.js';
 import IfSetText from '#/network/game/server/model/IfSetText.js';
 // import LastLoginInfo from '#/network/game/server/model/LastLoginInfo.js';
-// import LocAddChange from '#/network/game/server/model/LocAddChange.js';
-// import LocAnim from '#/network/game/server/model/LocAnim.js';
-// import LocDel from '#/network/game/server/model/LocDel.js';
-// import LocMerge from '#/network/game/server/model/LocMerge.js';
+import LocAddChange from '#/network/game/server/model/LocAddChange.js';
+import LocAnim from '#/network/game/server/model/LocAnim.js';
+import LocDel from '#/network/game/server/model/LocDel.js';
+import LocMerge from '#/network/game/server/model/LocMerge.js';
 import Logout from '#/network/game/server/model/Logout.js';
 import MapAnim from '#/network/game/server/model/MapAnim.js';
 import MapProjAnim from '#/network/game/server/model/MapProjAnim.js';
@@ -105,9 +105,9 @@ import MidiJingle from '#/network/game/server/model/MidiJingle.js';
 import MidiSong from '#/network/game/server/model/MidiSong.js';
 import NpcInfo from '#/network/game/server/model/NpcInfo.js';
 import ObjAdd from '#/network/game/server/model/ObjAdd.js';
-// import ObjCount from '#/network/game/server/model/ObjCount.js';
-// import ObjDel from '#/network/game/server/model/ObjDel.js';
-// import ObjReveal from '#/network/game/server/model/ObjReveal.js';
+import ObjCount from '#/network/game/server/model/ObjCount.js';
+import ObjDel from '#/network/game/server/model/ObjDel.js';
+import ObjReveal from '#/network/game/server/model/ObjReveal.js';
 import PCountDialog from '#/network/game/server/model/PCountDialog.js';
 import PlayerInfo from '#/network/game/server/model/PlayerInfo.js';
 import RebuildNormal from '#/network/game/server/model/RebuildNormal.js';
@@ -189,10 +189,10 @@ class ServerGameProtRepository {
         this.bind(IfSetText, new IfSetTextEncoder()); // needs tested
         this.bind(IfSetTabActive, new IfSetTabActiveEncoder()); // needs tested
         // this.bind(LastLoginInfo, new LastLoginInfoEncoder());
-        // this.bind(LocAddChange, new LocAddChangeEncoder());
-        // this.bind(LocAnim, new LocAnimEncoder());
-        // this.bind(LocDel, new LocDelEncoder());
-        // this.bind(LocMerge, new LocMergeEncoder());
+        this.bind(LocAddChange, new LocAddChangeEncoder());
+        this.bind(LocAnim, new LocAnimEncoder());
+        this.bind(LocDel, new LocDelEncoder());
+        this.bind(LocMerge, new LocMergeEncoder());
         this.bind(Logout, new LogoutEncoder()); // needs tested
         this.bind(MapAnim, new MapAnimEncoder()); // needs tested
         this.bind(MapProjAnim, new MapProjAnimEncoder()); // needs tested
@@ -203,9 +203,9 @@ class ServerGameProtRepository {
         this.bind(MinimapToggle, new MinimapToggleEncoder()); // needs tested
         this.bind(NpcInfo, new NpcInfoEncoder()); // needs updated
         this.bind(ObjAdd, new ObjAddEncoder());
-        // this.bind(ObjCount, new ObjCountEncoder());
-        // this.bind(ObjDel, new ObjDelEncoder());
-        // this.bind(ObjReveal, new ObjRevealEncoder());
+        this.bind(ObjCount, new ObjCountEncoder());
+        this.bind(ObjDel, new ObjDelEncoder());
+        this.bind(ObjReveal, new ObjRevealEncoder());
         this.bind(PCountDialog, new PCountDialogEncoder());
         this.bind(PlayerInfo, new PlayerInfoEncoder()); // needs tested
         this.bind(RebuildNormal, new RebuildNormalEncoder());

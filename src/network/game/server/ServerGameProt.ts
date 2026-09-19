@@ -11,14 +11,14 @@ export default class ServerGameProt {
 
     // updating interfaces
     static readonly IF_SETCOLOUR = new ServerGameProt(46, 4);
-    static readonly IF_SETHIDE = new ServerGameProt(138, 3);
+    static readonly IF_SETHIDE = new ServerGameProt(136, 3);
     static readonly IF_SETOBJECT = new ServerGameProt(106, 6);
     static readonly IF_SETMODEL = new ServerGameProt(84, 4);
     static readonly IF_SETANIM = new ServerGameProt(1, 4);
     static readonly IF_SETPLAYERHEAD = new ServerGameProt(30, 2);
     static readonly IF_SETTEXT = new ServerGameProt(223, -2);
     static readonly IF_SETNPCHEAD = new ServerGameProt(53, 4);
-    static readonly IF_SETPOSITION = new ServerGameProt(79, 6);
+    static readonly IF_SETPOSITION = new ServerGameProt(64, 6);
     static readonly IF_SETSCROLLPOS = new ServerGameProt(35, 4);
 
     // tutorial area
@@ -80,7 +80,7 @@ export default class ServerGameProt {
     // zones
     static readonly UPDATE_ZONE_PARTIAL_FOLLOWS = new ServerGameProt(243, 2);
     static readonly UPDATE_ZONE_FULL_FOLLOWS = new ServerGameProt(241, 2);
-    static readonly UPDATE_ZONE_PARTIAL_ENCLOSED = new ServerGameProt(112, -2);
+    static readonly UPDATE_ZONE_PARTIAL_ENCLOSED = new ServerGameProt(16, -2);
 
     constructor(
         readonly id: number,
