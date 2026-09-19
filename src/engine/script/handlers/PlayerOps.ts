@@ -1039,7 +1039,15 @@ const PlayerOps: CommandHandlers = {
     },
 
     [ScriptOpcode.HEADICONS_SET]: state => {
-        state.activePlayer.headicons = check(state.popInt(), NumberNotNull);
+        state.activePlayer.headicons = state.popInt();
+    },
+
+    [ScriptOpcode.SKULLICONS_GET]: state => {
+        state.pushInt(state.activePlayer.skullicons);
+    },
+
+    [ScriptOpcode.SKULLICONS_SET]: state => {
+        state.activePlayer.skullicons = state.popInt();
     },
 
     // https://x.com/JagexAsh/status/1791472651623370843

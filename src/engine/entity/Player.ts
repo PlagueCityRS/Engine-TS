@@ -316,6 +316,7 @@ export default class Player extends PathingEntity {
     combatLevel: number = 3;
     skillLevel: number = 0;
     headicons: number = -1;
+    skullicons: number = -1;
     baseLevels = new Uint8Array(21);
     lastStats: Int32Array = new Int32Array(21); // we track this so we know to flush stats only once a tick on changes
     lastLevels: Uint8Array = new Uint8Array(21); // we track this so we know to flush stats only once a tick on changes
@@ -1356,8 +1357,8 @@ export default class Player extends PathingEntity {
         const stream = Packet.alloc(0);
 
         stream.p1(this.gender);
+        stream.p1(this.skullicons);
         stream.p1(this.headicons);
-        stream.p1(-1);
 
         // todo: transmog support - write first "slot" with -1, followed by npc ID
 
