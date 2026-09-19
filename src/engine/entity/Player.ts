@@ -315,7 +315,7 @@ export default class Player extends PathingEntity {
     webClient: boolean = false;
     combatLevel: number = 3;
     skillLevel: number = 0;
-    headicons: number = 0;
+    headicons: number = -1;
     baseLevels = new Uint8Array(21);
     lastStats: Int32Array = new Int32Array(21); // we track this so we know to flush stats only once a tick on changes
     lastLevels: Uint8Array = new Uint8Array(21); // we track this so we know to flush stats only once a tick on changes
@@ -414,8 +414,8 @@ export default class Player extends PathingEntity {
     constructor(username: string, username37: bigint, hash64: bigint) {
         super(
             0,
-            3094,
-            3106, // tutorial island
+            3222, //3094,
+            3222, //3106, // tutorial island
             1,
             1,
             EntityLifeCycle.FOREVER,
@@ -1357,7 +1357,7 @@ export default class Player extends PathingEntity {
 
         stream.p1(this.gender);
         stream.p1(this.headicons);
-        stream.p1(0);
+        stream.p1(-1);
 
         // todo: transmog support - write first "slot" with -1, followed by npc ID
 

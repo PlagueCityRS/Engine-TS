@@ -39,7 +39,7 @@ export function playerInfoProtIndex(prot: PlayerInfoProt): number {
 }
 
 export enum NpcInfoProt {
-    DAMAGE2 = 0x120, //  lie
+    DAMAGE2 = 0x80, // lie
     ANIM = 0x2,
     FACE_ENTITY = 0x4,
     SAY = 0x40,

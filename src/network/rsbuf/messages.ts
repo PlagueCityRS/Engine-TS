@@ -119,6 +119,30 @@ export class PlayerInfoDamage implements InfoMessage {
     }
 }
 
+export class PlayerInfoDamage2 implements InfoMessage {
+    constructor(
+        private readonly damage: number,
+        private readonly damageType: number,
+        private readonly currentHitpoints: number,
+        private readonly baseHitpoints: number
+    ) {}
+
+    encode(buf: Packet): void {
+        buf.p1_alt3(this.damage);
+        buf.p1_alt1(this.damageType);
+        buf.p1(this.currentHitpoints);
+        buf.p1_alt3(this.baseHitpoints);
+    }
+
+    test(): number {
+        return 4;
+    }
+
+    persists(): boolean {
+        return false;
+    }
+}
+
 export class PlayerInfoChat implements InfoMessage {
     constructor(
         private readonly bytes: Uint8Array,
@@ -129,10 +153,10 @@ export class PlayerInfoChat implements InfoMessage {
 
     encode(buf: Packet): void {
         buf.p1(this.color);
-        buf.p1(this.effect);
-        buf.p1(this.ignored);
+        buf.p1_alt3(this.effect);
+        buf.p1_alt3(this.ignored);
         buf.p1(this.bytes.length);
-        buf.pdata(this.bytes, 0, this.bytes.length);
+        buf.pdata_alt2(this.bytes, 0, this.bytes.length);
     }
 
     test(): number {
