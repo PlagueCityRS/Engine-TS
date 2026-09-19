@@ -104,9 +104,33 @@ export class PlayerInfoDamage implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p1(this.damageType);
-        buf.p1_alt3(this.damage);
+        buf.p1(this.damage);
+        buf.p1_alt3(this.damageType);
         buf.p1_alt2(this.currentHitpoints);
+        buf.p1_alt3(this.baseHitpoints);
+    }
+
+    test(): number {
+        return 4;
+    }
+
+    persists(): boolean {
+        return false;
+    }
+}
+
+export class PlayerInfoDamage2 implements InfoMessage {
+    constructor(
+        private readonly damage: number,
+        private readonly damageType: number,
+        private readonly currentHitpoints: number,
+        private readonly baseHitpoints: number
+    ) {}
+
+    encode(buf: Packet): void {
+        buf.p1_alt3(this.damage);
+        buf.p1_alt1(this.damageType);
+        buf.p1(this.currentHitpoints);
         buf.p1_alt3(this.baseHitpoints);
     }
 
@@ -129,10 +153,10 @@ export class PlayerInfoChat implements InfoMessage {
 
     encode(buf: Packet): void {
         buf.p1(this.color);
-        buf.p1(this.effect);
-        buf.p1(this.ignored);
+        buf.p1_alt3(this.effect);
+        buf.p1_alt3(this.ignored);
         buf.p1(this.bytes.length);
-        buf.pdata(this.bytes, 0, this.bytes.length);
+        buf.pdata_alt2(this.bytes, 0, this.bytes.length);
     }
 
     test(): number {
@@ -177,12 +201,12 @@ export class PlayerInfoExactMove implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p1(this.startX);
-        buf.p1(this.startZ);
-        buf.p1(this.endX);
-        buf.p1(this.endZ);
-        buf.p2(this.begin);
-        buf.p2(this.finish);
+        buf.p1_alt2(this.startX);
+        buf.p1_alt3(this.startZ);
+        buf.p1_alt1(this.endX);
+        buf.p1_alt1(this.endZ);
+        buf.p2_alt1(this.begin);
+        buf.p2_alt2(this.finish);
         buf.p1(this.dir);
     }
 
@@ -218,8 +242,8 @@ export class NpcInfoFaceCoord implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
+        buf.p2_alt1(this.z); //  check Z
         buf.p2(this.x);
-        buf.p2_alt1(this.z);
     }
 
     test(): number {
@@ -280,6 +304,30 @@ export class NpcInfoDamage implements InfoMessage {
         buf.p1_alt2(this.damageType);
         buf.p1_alt2(this.currentHitpoints);
         buf.p1_alt1(this.baseHitpoints);
+    }
+
+    test(): number {
+        return 4;
+    }
+
+    persists(): boolean {
+        return false;
+    }
+}
+
+export class NpcInfoDamage2 implements InfoMessage {
+    constructor(
+        private readonly damage: number,
+        private readonly damageType: number,
+        private readonly currentHitpoints: number,
+        private readonly baseHitpoints: number
+    ) {}
+
+    encode(buf: Packet): void {
+        buf.p1_alt2(this.damage);
+        buf.p1_alt1(this.damageType);
+        buf.p1_alt3(this.currentHitpoints);
+        buf.p1(this.baseHitpoints);
     }
 
     test(): number {

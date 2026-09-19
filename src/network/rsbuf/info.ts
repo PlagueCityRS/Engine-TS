@@ -260,11 +260,9 @@ export class PlayerInfoEncoder {
         if ((masks & PlayerInfoProt.DAMAGE) !== 0) {
             renderer.write(this.updates, other.pid, PlayerInfoProt.DAMAGE);
         }
-        // Todo these streams
         if ((masks & PlayerInfoProt.CHAT) !== 0) {
             renderer.write(this.updates, other.pid, PlayerInfoProt.CHAT);
         }
-
         if ((masks & PlayerInfoProt.DAMAGE2) !== 0) {
             renderer.write(this.updates, other.pid, PlayerInfoProt.DAMAGE2);
         }
