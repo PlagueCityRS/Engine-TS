@@ -2,6 +2,7 @@ import {
     NpcInfoAnim,
     NpcInfoChangeType,
     NpcInfoDamage,
+    NpcInfoDamage2,
     NpcInfoFaceCoord,
     NpcInfoFaceEntity,
     NpcInfoSay,
@@ -179,7 +180,7 @@ export class NpcRenderer {
             highs += this.cache(nid, new NpcInfoDamage(npc.damageTaken, npc.damageType, npc.currentHitpoints, npc.baseHitpoints), NpcInfoProt.DAMAGE);
         }
         if ((masks & NpcInfoProt.DAMAGE2) !== 0) {
-            highs += this.cache(nid, new NpcInfoDamage(npc.damageTaken2, npc.damageType2, npc.currentHitpoints, npc.baseHitpoints), NpcInfoProt.DAMAGE2);
+            highs += this.cache(nid, new NpcInfoDamage2(npc.damageTaken2, npc.damageType2, npc.currentHitpoints, npc.baseHitpoints), NpcInfoProt.DAMAGE2);
         }
         if ((masks & NpcInfoProt.CHANGE_TYPE) !== 0) {
             highs += this.cache(nid, new NpcInfoChangeType(npc.ntype), NpcInfoProt.CHANGE_TYPE);
