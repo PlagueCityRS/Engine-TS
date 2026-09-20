@@ -656,6 +656,15 @@ const PlayerOps: CommandHandlers = {
         state.activePlayer.openChatModal(check(state.popInt(), NumberNotNull));
     },
 
+    [ScriptOpcode.IF_OPENFULLSCREEN]: state => {
+        const [main, banner] = state.popInts(2);
+
+        check(main, NumberNotNull);
+        check(banner, NumberNotNull);
+
+        state.activePlayer.openFullscreen(main, banner);
+    },
+
     [ScriptOpcode.IF_OPENMAIN_SIDE]: state => {
         const [main, side] = state.popInts(2);
 

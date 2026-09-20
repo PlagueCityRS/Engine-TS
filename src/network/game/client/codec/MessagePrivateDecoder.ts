@@ -7,7 +7,6 @@ export default class MessagePrivateDecoder extends ClientGameMessageDecoder<Mess
     prot = ClientGameProt.MESSAGE_PRIVATE;
 
     decode(buf: Packet, length: number) {
-        buf.g1(); // ignore
         const username = buf.g8();
         const input = buf.data.slice(buf.pos, buf.pos + length - 8);
         buf.pos += length - 8;

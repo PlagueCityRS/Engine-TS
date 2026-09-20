@@ -15,7 +15,7 @@ import IgnoreListAddDecoder from '#/network/game/client/codec/IgnoreListAddDecod
 import IgnoreListDelDecoder from '#/network/game/client/codec/IgnoreListDelDecoder.js';
 // import InvButtonDDecoder from '#/network/game/client/codec/InvButtonDDecoder.js';
 import InvButtonDecoder from '#/network/game/client/codec/InvButtonDecoder.js';
-// import MessagePrivateDecoder from '#/network/game/client/codec/MessagePrivateDecoder.js';
+import MessagePrivateDecoder from '#/network/game/client/codec/MessagePrivateDecoder.js';
 import MessagePublicDecoder from '#/network/game/client/codec/MessagePublicDecoder.js';
 import MoveClickDecoder from '#/network/game/client/codec/MoveClickDecoder.js';
 import OpHeldDecoder from '#/network/game/client/codec/OpHeldDecoder.js';
@@ -49,7 +49,7 @@ import IgnoreListAddHandler from '#/network/game/client/handler/IgnoreListAddHan
 import IgnoreListDelHandler from '#/network/game/client/handler/IgnoreListDelHandler.js';
 // import InvButtonDHandler from '#/network/game/client/handler/InvButtonDHandler.js';
 import InvButtonHandler from '#/network/game/client/handler/InvButtonHandler.js';
-// import MessagePrivateHandler from '#/network/game/client/handler/MessagePrivateHandler.js';
+import MessagePrivateHandler from '#/network/game/client/handler/MessagePrivateHandler.js';
 import MessagePublicHandler from '#/network/game/client/handler/MessagePublicHandler.js';
 import MoveClickHandler from '#/network/game/client/handler/MoveClickHandler.js';
 import OpHeldHandler from '#/network/game/client/handler/OpHeldHandler.js';
@@ -120,7 +120,7 @@ class ClientGameProtRepository {
         this.bind(new InvButtonDecoder(ClientGameProt.INV_BUTTON4, 4), new InvButtonHandler());
         this.bind(new InvButtonDecoder(ClientGameProt.INV_BUTTON5, 5), new InvButtonHandler());
         // this.bind(new InvButtonDDecoder(), new InvButtonDHandler());
-        // this.bind(new MessagePrivateDecoder(), new MessagePrivateHandler());
+        this.bind(new MessagePrivateDecoder(), new MessagePrivateHandler());
         this.bind(new MessagePublicDecoder(), new MessagePublicHandler());
         this.bind(new MoveClickDecoder(ClientGameProt.MOVE_GAMECLICK), new MoveClickHandler());
         this.bind(new MoveClickDecoder(ClientGameProt.MOVE_OPCLICK), new MoveClickHandler());

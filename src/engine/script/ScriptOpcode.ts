@@ -99,6 +99,7 @@ export const enum ScriptOpcode {
     HUNTALL,
     HUNTNEXT, // official
     IF_CLOSE, // official
+    IF_OPENFULLSCREEN,
     IF_OPENCHAT,
     IF_OPENMAIN_SIDE,
     IF_OPENMAIN,
@@ -174,6 +175,8 @@ export const enum ScriptOpcode {
     SET_SKILL_LEVEL,
     SETIDKCOLOUR,
     SETTIMER,
+    SKULLICONS_GET,
+    SKULLICONS_SET,
     SOFTTIMER, // official
     SOUND_SYNTH, // official, newspost
     SPOTANIM_PL,
@@ -204,8 +207,6 @@ export const enum ScriptOpcode {
     WEAKQUEUEVARARG,
     WEALTH_EVENT, // custom
     WEIGHT,
-    SKULLICONS_GET,
-    SKULLICONS_SET,
 
     // Npc ops (2500-2999)
     NPC_ADD = 2500, // official
@@ -554,6 +555,7 @@ export const ScriptOpcodeMap: Map<string, number> = new Map([
     ['HUNTNEXT', ScriptOpcode.HUNTNEXT],
     ['IF_CLOSE', ScriptOpcode.IF_CLOSE],
     ['IF_OPENCHAT', ScriptOpcode.IF_OPENCHAT],
+    ['IF_OPENFULLSCREEN', ScriptOpcode.IF_OPENFULLSCREEN],
     ['IF_OPENMAIN_SIDE', ScriptOpcode.IF_OPENMAIN_SIDE],
     ['IF_OPENMAIN', ScriptOpcode.IF_OPENMAIN],
     ['IF_OPENOVERLAY', ScriptOpcode.IF_OPENOVERLAY],
