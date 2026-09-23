@@ -7,10 +7,11 @@ export default class MessagePublicDecoder extends ClientGameMessageDecoder<Messa
     prot = ClientGameProt.MESSAGE_PUBLIC;
 
     decode(buf: Packet, length: number) {
+        const input = new Uint8Array(length);
+        buf.gdata_alt2(input, buf.pos, length - 2);
+
         const effect = buf.g1_alt3();
         const color = buf.g1();
-        const input = buf.data.subarray(buf.pos, buf.pos + length - 2);
-        buf.pos += length - 2;
 
         return new MessagePublic(input, color, effect);
     }

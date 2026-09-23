@@ -152,11 +152,10 @@ export class PlayerInfoChat implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p1(this.color);
-        buf.p1_alt3(this.effect);
-        buf.p1_alt3(this.ignored);
-        buf.p1(this.bytes.length);
-        buf.pdata_alt2(this.bytes, 0, this.bytes.length);
+        buf.p2_alt3((this.color << 8) | this.effect);
+        buf.p1(this.ignored);
+        buf.p1_alt3(this.bytes.length);
+        buf.pdata_alt3(this.bytes, 0, this.bytes.length);
     }
 
     test(): number {

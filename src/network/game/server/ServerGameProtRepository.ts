@@ -26,7 +26,7 @@ import IfSetPositionEncoder from '#/network/game/server/codec/IfSetPositionEncod
 import IfSetTabActiveEncoder from '#/network/game/server/codec/IfSetTabActiveEncoder.js';
 import IfSetTabEncoder from '#/network/game/server/codec/IfSetTabEncoder.js';
 import IfSetTextEncoder from '#/network/game/server/codec/IfSetTextEncoder.js';
-// import LastLoginInfoEncoder from '#/network/game/server/codec/LastLoginInfoEncoder.js';
+import LastLoginInfoEncoder from '#/network/game/server/codec/LastLoginInfoEncoder.js';
 import LocAddChangeEncoder from '#/network/game/server/codec/LocAddChangeEncoder.js';
 import LocAnimEncoder from '#/network/game/server/codec/LocAnimEncoder.js';
 import LocDelEncoder from '#/network/game/server/codec/LocDelEncoder.js';
@@ -91,7 +91,7 @@ import IfSetPosition from '#/network/game/server/model/IfSetPosition.js';
 import IfSetTab from '#/network/game/server/model/IfSetTab.js';
 import IfSetTabActive from '#/network/game/server/model/IfSetTabActive.js';
 import IfSetText from '#/network/game/server/model/IfSetText.js';
-// import LastLoginInfo from '#/network/game/server/model/LastLoginInfo.js';
+import LastLoginInfo from '#/network/game/server/model/LastLoginInfo.js';
 import LocAddChange from '#/network/game/server/model/LocAddChange.js';
 import LocAnim from '#/network/game/server/model/LocAnim.js';
 import LocDel from '#/network/game/server/model/LocDel.js';
@@ -141,6 +141,8 @@ import FriendlistLoaded from '#/network/game/server/model/FriendlistLoaded.js';
 import FriendlistLoadedEncoder from '#/network/game/server/codec/FriendlistLoadedEncoder.js';
 import MinimapToggle from '#/network/game/server/model/MinimapToggle.js';
 import MinimapToggleEncoder from '#/network/game/server/codec/MinimapToggleEncoder.js';
+import IfOpenFullscreen from '#/network/game/server/model/IfOpenFullscreen.js';
+import IfOpenFullscreenEncoder from '#/network/game/server/codec/IfOpenFullscreen.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type GenericOutgoingMessage<T extends ServerGameMessage> = new (...args: any[]) => T;
@@ -164,75 +166,76 @@ class ServerGameProtRepository {
     }
 
     constructor() {
-        this.bind(CamLookAt, new CamLookAtEncoder()); // needs tested
-        this.bind(CamMoveTo, new CamMoveToEncoder()); // needs tested
-        this.bind(CamReset, new CamResetEncoder()); // needs tested
-        this.bind(CamShake, new CamShakeEncoder()); // needs tested
-        this.bind(ChatFilterSettings, new ChatFilterSettingsEncoder()); // needs tested
-        this.bind(HintArrow, new HintArrowEncoder()); // needs tested
-        this.bind(IfClose, new IfCloseEncoder()); // needs tested
-        this.bind(IfOpenChat, new IfOpenChatEncoder()); // needs tested
-        this.bind(IfOpenMain, new IfOpenMainEncoder()); // needs tested
-        this.bind(IfOpenMainSide, new IfOpenMainSideEncoder()); // needs tested
-        this.bind(IfOpenOverlay, new IfOpenOverlayEncoder()); // needs tested
-        this.bind(IfOpenSide, new IfOpenSideEncoder()); // needs tested
-        this.bind(IfSetTab, new IfSetTabEncoder()); // needs tested
-        this.bind(IfSetAnim, new IfSetAnimEncoder()); // needs tested
-        this.bind(IfSetColour, new IfSetColourEncoder()); // needs tested
-        this.bind(IfSetHide, new IfSetHideEncoder()); // needs tested
-        this.bind(IfSetModel, new IfSetModelEncoder()); // needs tested
-        this.bind(IfSetNpcHead, new IfSetNpcHeadEncoder()); // needs tested
-        this.bind(IfSetObject, new IfSetObjectEncoder()); // needs tested
-        this.bind(IfSetPlayerHead, new IfSetPlayerHeadEncoder()); // needs tested
-        this.bind(IfSetPosition, new IfSetPositionEncoder()); // needs tested
-        this.bind(IfSetScrollPos, new IfSetScrollPosEncoder()); // needs tested
-        this.bind(IfSetText, new IfSetTextEncoder()); // needs tested
-        this.bind(IfSetTabActive, new IfSetTabActiveEncoder()); // needs tested
-        // this.bind(LastLoginInfo, new LastLoginInfoEncoder());
+        this.bind(CamLookAt, new CamLookAtEncoder());
+        this.bind(CamMoveTo, new CamMoveToEncoder());
+        this.bind(CamReset, new CamResetEncoder());
+        this.bind(CamShake, new CamShakeEncoder());
+        this.bind(ChatFilterSettings, new ChatFilterSettingsEncoder());
+        this.bind(HintArrow, new HintArrowEncoder());
+        this.bind(IfClose, new IfCloseEncoder());
+        this.bind(IfOpenChat, new IfOpenChatEncoder());
+        this.bind(IfOpenMain, new IfOpenMainEncoder());
+        this.bind(IfOpenMainSide, new IfOpenMainSideEncoder());
+        this.bind(IfOpenOverlay, new IfOpenOverlayEncoder());
+        this.bind(IfOpenSide, new IfOpenSideEncoder());
+        this.bind(IfSetTab, new IfSetTabEncoder());
+        this.bind(IfSetAnim, new IfSetAnimEncoder());
+        this.bind(IfSetColour, new IfSetColourEncoder());
+        this.bind(IfSetHide, new IfSetHideEncoder());
+        this.bind(IfSetModel, new IfSetModelEncoder());
+        this.bind(IfSetNpcHead, new IfSetNpcHeadEncoder());
+        this.bind(IfSetObject, new IfSetObjectEncoder());
+        this.bind(IfSetPlayerHead, new IfSetPlayerHeadEncoder());
+        this.bind(IfSetPosition, new IfSetPositionEncoder());
+        this.bind(IfSetScrollPos, new IfSetScrollPosEncoder());
+        this.bind(IfSetText, new IfSetTextEncoder());
+        this.bind(IfSetTabActive, new IfSetTabActiveEncoder());
+        this.bind(LastLoginInfo, new LastLoginInfoEncoder());
         this.bind(LocAddChange, new LocAddChangeEncoder());
         this.bind(LocAnim, new LocAnimEncoder());
         this.bind(LocDel, new LocDelEncoder());
         this.bind(LocMerge, new LocMergeEncoder());
-        this.bind(Logout, new LogoutEncoder()); // needs tested
-        this.bind(MapAnim, new MapAnimEncoder()); // needs tested
-        this.bind(MapProjAnim, new MapProjAnimEncoder()); // needs tested
-        this.bind(MessageGame, new MessageGameEncoder()); // needs tested
-        this.bind(MessagePrivate, new MessagePrivateEncoder()); // needs tested
-        this.bind(MidiJingle, new MidiJingleEncoder()); // needs tested
-        this.bind(MidiSong, new MidiSongEncoder()); // needs tested
-        this.bind(MinimapToggle, new MinimapToggleEncoder()); // needs tested
-        this.bind(NpcInfo, new NpcInfoEncoder()); // needs updated
+        this.bind(Logout, new LogoutEncoder());
+        this.bind(MapAnim, new MapAnimEncoder());
+        this.bind(MapProjAnim, new MapProjAnimEncoder());
+        this.bind(MessageGame, new MessageGameEncoder());
+        this.bind(MessagePrivate, new MessagePrivateEncoder());
+        this.bind(MidiJingle, new MidiJingleEncoder());
+        this.bind(MidiSong, new MidiSongEncoder());
+        this.bind(MinimapToggle, new MinimapToggleEncoder());
+        this.bind(NpcInfo, new NpcInfoEncoder());
         this.bind(ObjAdd, new ObjAddEncoder());
         this.bind(ObjCount, new ObjCountEncoder());
         this.bind(ObjDel, new ObjDelEncoder());
         this.bind(ObjReveal, new ObjRevealEncoder());
         this.bind(PCountDialog, new PCountDialogEncoder());
-        this.bind(PlayerInfo, new PlayerInfoEncoder()); // needs tested
+        this.bind(PlayerInfo, new PlayerInfoEncoder());
         this.bind(RebuildNormal, new RebuildNormalEncoder());
         this.bind(ResetAnims, new ResetAnimsEncoder());
         this.bind(ResetClientVarCache, new ResetClientVarCacheEncoder());
         this.bind(SetMultiway, new SetMultiwayEncoder());
-        this.bind(SynthSound, new SynthSoundEncoder()); // needs tested
-        this.bind(TutFlash, new TutFlashEncoder()); // needs tested
+        this.bind(SynthSound, new SynthSoundEncoder());
+        this.bind(TutFlash, new TutFlashEncoder());
         this.bind(TutOpen, new TutOpenEncoder());
         this.bind(UnsetMapFlag, new UnsetMapFlagEncoder());
         this.bind(UpdateFriendList, new UpdateFriendListEncoder());
         this.bind(UpdateIgnoreList, new UpdateIgnoreListEncoder());
-        this.bind(UpdateInvFull, new UpdateInvFullEncoder()); // needs tested
-        this.bind(UpdateInvPartial, new UpdateInvPartialEncoder()); // needs tested
+        this.bind(UpdateInvFull, new UpdateInvFullEncoder());
+        this.bind(UpdateInvPartial, new UpdateInvPartialEncoder());
         this.bind(UpdateInvStopTransmit, new UpdateInvStopTransmitEncoder());
-        this.bind(UpdateRunEnergy, new UpdateRunEnergyEncoder()); // needs tested
-        this.bind(UpdateRunWeight, new UpdateRunWeightEncoder()); // needs tested
-        this.bind(UpdateRebootTimer, new UpdateRebootTimerEncoder()); // needs tested
-        this.bind(UpdateStat, new UpdateStatEncoder()); // needs tested
-        this.bind(UpdateUid192, new UpdatePidEncoder()); // needs tested
-        this.bind(UpdateZoneFullFollows, new UpdateZoneFullFollowsEncoder()); // needs tested
-        this.bind(UpdateZonePartialEnclosed, new UpdateZonePartialEnclosedEncoder()); // needs tested
-        this.bind(UpdateZonePartialFollows, new UpdateZonePartialFollowsEncoder()); // needs tested
-        this.bind(VarpLarge, new VarpLargeEncoder()); // needs tested
-        this.bind(VarpSmall, new VarpSmallEncoder()); // needs tested
-        this.bind(SetPlayerOp, new SetPlayerOpEncoder()); // needs tested
-        this.bind(FriendlistLoaded, new FriendlistLoadedEncoder()); // needs tested
+        this.bind(UpdateRunEnergy, new UpdateRunEnergyEncoder());
+        this.bind(UpdateRunWeight, new UpdateRunWeightEncoder());
+        this.bind(UpdateRebootTimer, new UpdateRebootTimerEncoder());
+        this.bind(UpdateStat, new UpdateStatEncoder());
+        this.bind(UpdateUid192, new UpdatePidEncoder());
+        this.bind(UpdateZoneFullFollows, new UpdateZoneFullFollowsEncoder());
+        this.bind(UpdateZonePartialEnclosed, new UpdateZonePartialEnclosedEncoder());
+        this.bind(UpdateZonePartialFollows, new UpdateZonePartialFollowsEncoder());
+        this.bind(VarpLarge, new VarpLargeEncoder());
+        this.bind(VarpSmall, new VarpSmallEncoder());
+        this.bind(SetPlayerOp, new SetPlayerOpEncoder());
+        this.bind(FriendlistLoaded, new FriendlistLoadedEncoder());
+        this.bind(IfOpenFullscreen, new IfOpenFullscreenEncoder());
     }
 }
 

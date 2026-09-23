@@ -72,6 +72,7 @@ import VarBitType from '#/cache/config/VarBitType.js';
 import FriendlistLoaded from '#/network/game/server/model/FriendlistLoaded.js';
 import UpdateIgnoreList from '#/network/game/server/model/UpdateIgnoreList.js';
 import Midi from '#/cache/midi/Midi.js';
+import IfOpenFullscreen from '#/network/game/server/model/IfOpenFullscreen.js';
 
 const levelExperience = new Int32Array(99);
 
@@ -316,6 +317,7 @@ export default class Player extends PathingEntity {
     combatLevel: number = 3;
     skillLevel: number = 0;
     headicons: number = -1;
+    skullicons: number = -1;
     baseLevels = new Uint8Array(21);
     lastStats: Int32Array = new Int32Array(21); // we track this so we know to flush stats only once a tick on changes
     lastLevels: Uint8Array = new Uint8Array(21); // we track this so we know to flush stats only once a tick on changes
@@ -358,6 +360,8 @@ export default class Player extends PathingEntity {
     modalTutorial = -1;
     overlay = -1;
     lastOverlay = -1;
+    fullscreenMain = -1;
+    fullscreenBanner = -1;
     refreshModal = false;
     refreshModalClose = false;
     requestModalClose = false;
@@ -1356,8 +1360,8 @@ export default class Player extends PathingEntity {
         const stream = Packet.alloc(0);
 
         stream.p1(this.gender);
+        stream.p1(this.skullicons);
         stream.p1(this.headicons);
-        stream.p1(-1);
 
         // todo: transmog support - write first "slot" with -1, followed by npc ID
 
@@ -2107,6 +2111,13 @@ export default class Player extends PathingEntity {
         }
     }
 
+    openFullscreen(main: number, banner: number) {
+        // eh
+        this.fullscreenMain = main;
+        this.fullscreenBanner = banner;
+        this.write(new IfOpenFullscreen(this.fullscreenMain, this.fullscreenBanner));
+    }
+
     exactMove(startX: number, startZ: number, endX: number, endZ: number, startCycle: number, endCycle: number, direction: number) {
         this.teleport(endX, endZ, this.level);
         this.exactStartX = startX;
@@ -2268,17 +2279,47 @@ export default class Player extends PathingEntity {
         this.write(new HintArrow(-1, 0, 0, 0, 0, 0));
     }
 
+    getDateRuneDay() {
+        const currentMs = performance.timeOrigin + performance.now();
+        return Math.floor(currentMs / 86400000) - 11745;
+    }
+
+    dateToRuneDay(date: bigint) {
+        const kjlfsad = Number(date);
+        return kjlfsad;
+    }
+
+    runeDayToDate(runeDay: number) {
+        const ajklsf = BigInt(runeDay);
+        return ajklsf;
+    }
+
     lastLoginInfo() {
-        const lastDate: bigint = this.lastLoginTime === 0n ? BigInt(Date.now()) : this.lastLoginTime;
-        const nextDate: bigint = BigInt(Date.now());
+        const lastDate: number = this.lastLoginTime === 0n ? this.getDateRuneDay() : this.dateToRuneDay(this.lastLoginTime);
+        const nextDate: number = this.getDateRuneDay();
 
         const lastIp = 2130706433; // 127.0.0.1
-        const daysSinceLogin: number = (Number(nextDate - lastDate) / (1000 * 60 * 60 * 24)) | 0;
-        const daysSinceRecoveriesChanged = 201; // hide :)
-        const warnMembersInNonMembers: boolean = !Environment.node.members && this.members;
+        const daysSinceLogin = lastDate;
+        const daysSincePasswordChanged = 8971; // hide :)
+        const currentDay = nextDate;
+        const unreadMessageCount = 0;
+        const membersCreditDays = 365;
+        const daysSinceRecoveriesChanged = 1;
+        const daysSinceContactDetailsChanged = 2;
 
-        this.write(new LastLoginInfo(lastIp, daysSinceLogin, daysSinceRecoveriesChanged, this.messageCount, warnMembersInNonMembers));
-        this.lastLoginTime = nextDate;
+        this.write(
+            new LastLoginInfo(
+                lastIp,
+                currentDay,
+                daysSinceLogin,
+                daysSincePasswordChanged,
+                daysSinceRecoveriesChanged,
+                daysSinceContactDetailsChanged, // current day?
+                unreadMessageCount,
+                membersCreditDays
+            )
+        );
+        this.lastLoginTime = this.runeDayToDate(nextDate);
     }
 
     logout(): void {

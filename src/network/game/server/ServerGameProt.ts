@@ -8,6 +8,7 @@ export default class ServerGameProt {
     static readonly IF_OPENMAIN = new ServerGameProt(14, 2);
     static readonly IF_OPENSIDE = new ServerGameProt(252, 2);
     static readonly IF_OPENOVERLAY = new ServerGameProt(60, 2);
+    static readonly IF_OPENFULLSCREEN = new ServerGameProt(15, 4);
 
     // updating interfaces
     static readonly IF_SETCOLOUR = new ServerGameProt(46, 4);
