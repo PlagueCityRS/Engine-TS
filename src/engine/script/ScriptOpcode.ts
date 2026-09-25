@@ -207,6 +207,7 @@ export const enum ScriptOpcode {
     WEAKQUEUEVARARG,
     WEALTH_EVENT, // custom
     WEIGHT,
+    IF_SETMODELOFFSET = 2491,
 
     // Npc ops (2500-2999)
     NPC_ADD = 2500, // official
@@ -564,6 +565,7 @@ export const ScriptOpcodeMap: Map<string, number> = new Map([
     ['IF_SETCOLOUR', ScriptOpcode.IF_SETCOLOUR],
     ['IF_SETHIDE', ScriptOpcode.IF_SETHIDE],
     ['IF_SETMODEL', ScriptOpcode.IF_SETMODEL],
+    ['IF_SETMODELOFFSET', ScriptOpcode.IF_SETMODELOFFSET],
     ['IF_SETNPCHEAD', ScriptOpcode.IF_SETNPCHEAD],
     ['IF_SETOBJECT', ScriptOpcode.IF_SETOBJECT],
     ['IF_SETPLAYERHEAD', ScriptOpcode.IF_SETPLAYERHEAD],

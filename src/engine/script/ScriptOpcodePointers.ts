@@ -205,6 +205,9 @@ const ScriptOpcodePointers: {
     [ScriptOpcode.IF_SETMODEL]: {
         require: ['active_player']
     },
+    [ScriptOpcode.IF_SETMODELOFFSET]: {
+        require: ['active_player']
+    },
     [ScriptOpcode.IF_SETNPCHEAD]: {
         require: ['active_player']
     },
