@@ -51,7 +51,9 @@ import { EntityQueueState, PlayerQueueType } from '#/engine/entity/PlayerQueueRe
 import { PlayerStat } from '#/engine/entity/PlayerStat.js';
 import { SessionLog } from '#/engine/entity/tracking/SessionLog.js';
 import { WealthTransactionEvent, WealthEvent } from '#/engine/entity/tracking/WealthEvent.js';
+import { CoordGrid } from '#/engine/CoordGrid.js';
 import GameMap, { changeLocCollision, changeNpcCollision, changeBlockCollision, changePlayerOccCollision } from '#/engine/GameMap.js';
+import InstanceController from '#/engine/InstanceController.js';
 import { Inventory } from '#/engine/Inventory.js';
 import ScriptPointer from '#/engine/script/ScriptPointer.js';
 import ScriptProvider from '#/engine/script/ScriptProvider.js';
@@ -92,7 +94,7 @@ import {
 import Environment from '#/util/Environment.js';
 import { fromBase37, toBase37, toSafeName } from '#/util/JString.js';
 import LinkList from '#/datastruct/LinkList.js';
-import { printDebug, printError, printInfo } from '#/util/Logger.js';
+import { printDebug, printError, printInfo, printWarning } from '#/util/Logger.js';
 import OnDemand from './OnDemand.js';
 import { ObjDelayedRequest } from './entity/ObjDelayedRequest.js';
 import DbTableIndex from '#/cache/config/DbTableIndex.js';
@@ -131,8 +133,14 @@ class World {
     private static readonly TIMEOUT_NO_CONNECTION: number = 50; // 30s with no connection (16 ticks in osrs)
     private static readonly TIMEOUT_NO_RESPONSE: number = 100; // 60s without any response
 
+    // Lumbridge — failsafe spawn when a player has no valid destination (e.g. logged in inside an instance).
+    private static readonly DEFAULT_SPAWN = { x: 3222, z: 3222, level: 0 };
+
     // the game/zones map
     readonly gameMap: GameMap = new GameMap(Environment.node.members);
+
+    // instance management
+    readonly instances: InstanceController = new InstanceController();
 
     // shared inventories (shops)
     readonly invs: Set<Inventory> = new Set();
@@ -648,6 +656,11 @@ class World {
     private processNpcEventQueue(): void {
         for (const request of this.npcEventQueue.all()) {
             const npc = request.npc;
+            if (request.type === NpcEventType.SPAWN && (!npc.isActive || npc.nid === -1 || this.getNpc(npc.nid) !== npc)) {
+                request.unlink();
+                continue;
+            }
+
             if (!npc.delayed) {
                 request.unlink();
                 const state = ScriptRunner.init(request.script, npc);
@@ -940,7 +953,33 @@ class World {
             player.tele = true;
             player.moveClickRequest = false;
 
-            this.gameMap.getZone(player.x, player.z, player.level).enter(player);
+            // A player must never log in inside an instance (single x-band check, independent of
+            // whether that instance is still built, torn down, or replaced). Return them to the
+            // previous overworld tile captured on instance entry, else Lumbridge failsafe.
+            if (CoordGrid.isInstanceX(player.x)) {
+                if (player.hasPreviousOverworldTile && !CoordGrid.isInstanceX(player.previousOverworldX)) {
+                    player.x = player.previousOverworldX;
+                    player.z = player.previousOverworldZ;
+                    player.level = player.previousOverworldLevel;
+                } else {
+                    printWarning(`[World] Player login: player ${player.username} was in an instance with no valid previous tile, teleporting to Lumbridge failsafe`);
+                    player.x = World.DEFAULT_SPAWN.x;
+                    player.z = World.DEFAULT_SPAWN.z;
+                    player.level = World.DEFAULT_SPAWN.level;
+                }
+            }
+
+            const zone = this.gameMap.getZoneIfExists(player.x, player.z, player.level);
+            if (zone) {
+                zone.enter(player);
+            } else {
+                printWarning(`[World] Player login: zone does not exist at (${player.x}, ${player.z}, L${player.level}), teleporting to default spawn`);
+                player.x = World.DEFAULT_SPAWN.x;
+                player.z = World.DEFAULT_SPAWN.z;
+                player.level = World.DEFAULT_SPAWN.level;
+                const defaultZone = this.gameMap.getZone(player.x, player.z, player.level);
+                defaultZone.enter(player);
+            }
             player.onLogin();
 
             if (this.shutdownTick != -1) {
@@ -1276,9 +1315,18 @@ class World {
         npc.z = npc.startZ;
         npc.isActive = true;
 
-        const zone = this.gameMap.getZone(npc.x, npc.z, npc.level);
+        // During initialization, zones can auto-create. After init, zones must be pre-created.
+        const zone = this.gameMap.isInitializing() ? this.gameMap.getZone(npc.x, npc.z, npc.level) : this.gameMap.getZoneIfExists(npc.x, npc.z, npc.level);
+
+        if (!zone) {
+            printWarning(`[World] addNpc: zone does not exist at (${npc.x}, ${npc.z}, L${npc.level}), NPC spawn failed`);
+            npc.isActive = false;
+            return;
+        }
         zone.enter(npc);
 
+        // Apply spawn collision (mirrors removeNpc). Safe now that instance zone copies
+        // strip NPC/PLAYER flags, so this no longer conflicts with template collision.
         switch (npc.blockWalk) {
             case BlockWalk.NPC:
                 changeNpcCollision(npc.width, npc.x, npc.z, npc.level, true);
@@ -1299,7 +1347,8 @@ class World {
             this.npcEventQueue.addTail(new NpcEventRequest(NpcEventType.SPAWN, script, npc));
         }
 
-        if (duration > -1) {
+        // duration 0 (instances only) means permanent: skip setLifeCycle so lifecycleTick stays at its -1 default.
+        if (duration > 0) {
             npc.setLifeCycle(duration);
         }
     }
@@ -1309,9 +1358,11 @@ class World {
             return;
         }
 
-        const zone = this.gameMap.getZone(npc.x, npc.z, npc.level);
+        const zone = this.gameMap.getZoneIfExists(npc.x, npc.z, npc.level);
         const adjustedDuration = this.scaleByPlayerCount(duration);
-        zone.leave(npc);
+        if (zone) {
+            zone.leave(npc);
+        }
         npc.isActive = false;
 
         switch (npc.blockWalk) {
@@ -1334,15 +1385,18 @@ class World {
     }
 
     getLoc(x: number, z: number, level: number, locId: number): Loc | null {
-        return this.gameMap.getZone(x, z, level).getLoc(x, z, locId);
+        const zone = this.gameMap.getZoneIfExists(x, z, level);
+        return zone ? zone.getLoc(x, z, locId) : null;
     }
 
     getObj(x: number, z: number, level: number, objId: number, receiver64: bigint): Obj | null {
-        return this.gameMap.getZone(x, z, level).getObj(x, z, objId, receiver64);
+        const zone = this.gameMap.getZoneIfExists(x, z, level);
+        return zone ? zone.getObj(x, z, objId, receiver64) : null;
     }
 
     getObjOfReceiver(x: number, z: number, level: number, objId: number, receiver64: bigint): Obj | null {
-        return this.gameMap.getZone(x, z, level).getObjOfReceiver(x, z, objId, receiver64);
+        const zone = this.gameMap.getZoneIfExists(x, z, level);
+        return zone ? zone.getObjOfReceiver(x, z, objId, receiver64) : null;
     }
 
     trackZone(zone: Zone): void {
@@ -1350,13 +1404,17 @@ class World {
     }
 
     addLoc(loc: Loc, duration: number): void {
+        const zone: Zone | null = this.gameMap.getZoneIfExists(loc.x, loc.z, loc.level);
+        if (!zone) {
+            printWarning(`[World] addLoc: zone does not exist at (${loc.x}, ${loc.z}, L${loc.level})`);
+            return;
+        }
         // printDebug(`[World] addLoc => name: ${LocType.get(loc.type).name}, duration: ${duration}`);
         const type: LocType = LocType.get(loc.type);
         if (type.blockwalk) {
             changeLocCollision(loc.shape, loc.angle, type.blockrange, type.length, type.width, type.active, loc.x, loc.z, loc.level, true);
         }
 
-        const zone: Zone = this.gameMap.getZone(loc.x, loc.z, loc.level);
         zone.addLoc(loc);
         this.trackZone(zone);
         loc.setLifeCycle(duration);
@@ -1365,6 +1423,12 @@ class World {
     changeLoc(loc: Loc, typeID: number, shape: number, angle: number, duration: number) {
         // If a dynamic loc is inactive, it should never return to the game world
         if (loc.lifecycle === EntityLifeCycle.DESPAWN && !loc.isValid()) {
+            return;
+        }
+
+        const zone: Zone | null = this.gameMap.getZoneIfExists(loc.x, loc.z, loc.level);
+        if (!zone) {
+            printWarning(`[World] changeLoc: zone does not exist at (${loc.x}, ${loc.z}, L${loc.level})`);
             return;
         }
 
@@ -1386,7 +1450,6 @@ class World {
         }
 
         // Notify zone that loc has been changed
-        const zone: Zone = this.gameMap.getZone(loc.x, loc.z, loc.level);
         zone.changeLoc(loc);
         this.trackZone(zone);
 
@@ -1402,14 +1465,22 @@ class World {
 
     mergeLoc(loc: Loc, player: Player, startCycle: number, endCycle: number, south: number, east: number, north: number, west: number): void {
         // printDebug(`[World] mergeLoc => name: ${LocType.get(loc.type).name}`);
-        const zone: Zone = this.gameMap.getZone(loc.x, loc.z, loc.level);
+        const zone: Zone | null = this.gameMap.getZoneIfExists(loc.x, loc.z, loc.level);
+        if (!zone) {
+            printWarning(`[World] mergeLoc: zone does not exist at (${loc.x}, ${loc.z}, L${loc.level})`);
+            return;
+        }
         zone.mergeLoc(loc, player, startCycle, endCycle, south, east, north, west);
         this.trackZone(zone);
     }
 
     animLoc(loc: Loc, seq: number): void {
         // printDebug(`[World] animLoc => name: ${LocType.get(loc.type).name}, seq: ${seq}`);
-        const zone: Zone = this.gameMap.getZone(loc.x, loc.z, loc.level);
+        const zone: Zone | null = this.gameMap.getZoneIfExists(loc.x, loc.z, loc.level);
+        if (!zone) {
+            printWarning(`[World] animLoc: zone does not exist at (${loc.x}, ${loc.z}, L${loc.level})`);
+            return;
+        }
         zone.animLoc(loc, seq);
         this.trackZone(zone);
     }
@@ -1420,16 +1491,21 @@ class World {
             return;
         }
 
+        const zone: Zone | null = this.gameMap.getZoneIfExists(loc.x, loc.z, loc.level);
+        if (!zone) {
+            printWarning(`[World] removeLoc: zone does not exist at (${loc.x}, ${loc.z}, L${loc.level})`);
+            return;
+        }
+
         const type: LocType = LocType.get(loc.type);
         if (type.blockwalk) {
             changeLocCollision(loc.shape, loc.angle, type.blockrange, type.length, type.width, type.active, loc.x, loc.z, loc.level, false);
         }
 
-        const zone: Zone = this.gameMap.getZone(loc.x, loc.z, loc.level);
         zone.removeLoc(loc);
         this.trackZone(zone);
 
-        // If the Loc is static, set a respawn duratio
+        // If the Loc is static, set a respawn duration
         if (loc.lifecycle === EntityLifeCycle.RESPAWN) {
             loc.setLifeCycle(duration);
         }
@@ -1456,7 +1532,11 @@ class World {
         }
 
         // Notify zone that loc has been changed
-        const zone: Zone = this.gameMap.getZone(loc.x, loc.z, loc.level);
+        const zone: Zone | null = this.gameMap.getZoneIfExists(loc.x, loc.z, loc.level);
+        if (!zone) {
+            printWarning(`[World] revertLoc: zone does not exist at (${loc.x}, ${loc.z}, L${loc.level})`);
+            return;
+        }
         zone.changeLoc(loc);
         loc.setLifeCycle(-1);
         this.trackZone(zone);
@@ -1479,7 +1559,11 @@ class World {
             }
         }
 
-        const zone: Zone = this.gameMap.getZone(obj.x, obj.z, obj.level);
+        const zone: Zone | null = this.gameMap.getZoneIfExists(obj.x, obj.z, obj.level);
+        if (!zone) {
+            printWarning(`[World] addObj: zone does not exist at (${obj.x}, ${obj.z}, L${obj.level})`);
+            return;
+        }
         zone.addObj(obj, receiver64);
         this.trackZone(zone);
         // If the obj is dropped to a specific person
@@ -1500,14 +1584,22 @@ class World {
     }
 
     revealObj(obj: Obj): void {
-        const zone: Zone = this.gameMap.getZone(obj.x, obj.z, obj.level);
+        const zone: Zone | null = this.gameMap.getZoneIfExists(obj.x, obj.z, obj.level);
+        if (!zone) {
+            printWarning(`[World] revealObj: zone does not exist at (${obj.x}, ${obj.z}, L${obj.level})`);
+            return;
+        }
         zone.revealObj(obj);
         this.trackZone(zone);
     }
 
     changeObj(obj: Obj, newCount: number): void {
         // printDebug(`[World] changeObj => name: ${ObjType.get(obj.type).name}, receiverId: ${receiverId}, newCount: ${newCount}`);
-        const zone: Zone = this.gameMap.getZone(obj.x, obj.z, obj.level);
+        const zone: Zone | null = this.gameMap.getZoneIfExists(obj.x, obj.z, obj.level);
+        if (!zone) {
+            printWarning(`[World] changeObj: zone does not exist at (${obj.x}, ${obj.z}, L${obj.level})`);
+            return;
+        }
         zone.changeObj(obj, obj.count, newCount);
         this.trackZone(zone);
     }
@@ -1519,7 +1611,11 @@ class World {
             return;
         }
         // printDebug(`[World] removeObj => name: ${ObjType.get(obj.type).name}, duration: ${duration}`);
-        const zone: Zone = this.gameMap.getZone(obj.x, obj.z, obj.level);
+        const zone: Zone | null = this.gameMap.getZoneIfExists(obj.x, obj.z, obj.level);
+        if (!zone) {
+            printWarning(`[World] removeObj: zone does not exist at (${obj.x}, ${obj.z}, L${obj.level})`);
+            return;
+        }
         const adjustedDuration = this.scaleByPlayerCount(duration);
         zone.removeObj(obj);
         this.trackZone(zone);
@@ -1533,13 +1629,21 @@ class World {
     }
 
     animMap(level: number, x: number, z: number, spotanim: number, height: number, delay: number): void {
-        const zone: Zone = this.gameMap.getZone(x, z, level);
+        const zone: Zone | null = this.gameMap.getZoneIfExists(x, z, level);
+        if (!zone) {
+            printWarning(`[World] animMap: zone does not exist at (${x}, ${z}, L${level})`);
+            return;
+        }
         zone.animMap(x, z, spotanim, height, delay);
         this.trackZone(zone);
     }
 
     mapProjAnim(level: number, x: number, z: number, dstX: number, dstZ: number, target: number, spotanim: number, srcHeight: number, dstHeight: number, startDelay: number, endDelay: number, peak: number, arc: number): void {
-        const zone: Zone = this.gameMap.getZone(x, z, level);
+        const zone: Zone | null = this.gameMap.getZoneIfExists(x, z, level);
+        if (!zone) {
+            printWarning(`[World] mapProjAnim: zone does not exist at (${x}, ${z}, L${level})`);
+            return;
+        }
         zone.mapProjAnim(x, z, dstX, dstZ, target, spotanim, srcHeight, dstHeight, startDelay, endDelay, peak, arc);
         this.trackZone(zone);
     }
@@ -1610,7 +1714,10 @@ class World {
         }
 
         rsbuf.removePlayer(player.slot);
-        this.gameMap.getZone(player.x, player.z, player.level).leave(player);
+        const zone = this.gameMap.getZoneIfExists(player.x, player.z, player.level);
+        if (zone) {
+            zone.leave(player);
+        }
         delete this.players[player.slot];
         player.unlink();
         changeNpcCollision(player.width, player.x, player.z, player.level, false);

@@ -53,6 +53,7 @@ import MidiJingle from '#/network/game/server/model/MidiJingle.js';
 import MidiSong from '#/network/game/server/model/MidiSong.js';
 import ResetAnims from '#/network/game/server/model/ResetAnims.js';
 import ResetClientVarCache from '#/network/game/server/model/ResetClientVarCache.js';
+import SetMultiway from '#/network/game/server/model/SetMultiway.js';
 import TutOpen from '#/network/game/server/model/TutOpen.js';
 import UnsetMapFlag from '#/network/game/server/model/UnsetMapFlag.js';
 import UpdateInvStopTransmit from '#/network/game/server/model/UpdateInvStopTransmit.js';
@@ -270,6 +271,12 @@ export default class Player extends PathingEntity {
         // last login info
         sav.p8(this.lastLoginTime);
 
+        // persistent overworld fallback tile used when logging back in from instance coords
+        sav.p2(this.previousOverworldX);
+        sav.p2(this.previousOverworldZ);
+        sav.p1(this.previousOverworldLevel);
+        sav.p1(this.hasPreviousOverworldTile ? 1 : 0);
+
         sav.p4(Packet.getcrc(sav.data, 0, sav.pos));
         return sav.data.subarray(0, sav.pos);
     }
@@ -323,6 +330,13 @@ export default class Player extends PathingEntity {
     lastLevels: Uint8Array = new Uint8Array(21); // we track this so we know to flush stats only once a tick on changes
     originX: number = -1;
     originZ: number = -1;
+
+    // Last known overworld tile; updated when transitioning from overworld -> instance.
+    previousOverworldX: number = 0;
+    previousOverworldZ: number = 0;
+    previousOverworldLevel: number = 0;
+    hasPreviousOverworldTile: boolean = false;
+
     buildArea: BuildArea = new BuildArea(this);
     animProtect: number = 0;
     invListeners: InventoryListener[] = [];
@@ -502,8 +516,15 @@ export default class Player extends PathingEntity {
         // - runenergy
         // - reset anims
         // - social
+        if (!CoordGrid.isInstanceX(this.x)) {
+            this.previousOverworldX = this.x;
+            this.previousOverworldZ = this.z;
+            this.previousOverworldLevel = this.level;
+            this.hasPreviousOverworldTile = true;
+        }
 
         this.buildArea.rebuildNormal();
+        this.queueZoneTransitionTriggers(this.x, this.z, this.level, true);
         this.write(new ChatFilterSettings(this.publicChat, this.privateChat, this.tradeDuel));
 
         // todo: exact order
@@ -534,6 +555,52 @@ export default class Player extends PathingEntity {
         this.lastStepX = this.x - 1;
         this.lastStepZ = this.z;
         this.isActive = true;
+    }
+
+    protected override onTileUpdated(previousX: number, previousZ: number, previousLevel: number): void {
+        this.queueZoneTransitionTriggers(previousX, previousZ, previousLevel, false);
+    }
+
+    private queueZoneTransitionTriggers(previousX: number, previousZ: number, previousLevel: number, initialLogin: boolean): void {
+        const previousZoneX = (previousX >> 3) << 3;
+        const previousZoneZ = (previousZ >> 3) << 3;
+        const currentZoneX = (this.x >> 3) << 3;
+        const currentZoneZ = (this.z >> 3) << 3;
+
+        const previousMapZoneX = (previousZoneX >> 6) << 6;
+        const previousMapZoneZ = (previousZoneZ >> 6) << 6;
+        const currentMapZoneX = (currentZoneX >> 6) << 6;
+        const currentMapZoneZ = (currentZoneZ >> 6) << 6;
+
+        const mapZoneBoundaryChanged: boolean = initialLogin || (previousX >> 6) << 6 !== (this.x >> 6) << 6 || (previousZ >> 6) << 6 !== (this.z >> 6) << 6;
+        const mapZoneChanged: boolean = initialLogin || (mapZoneBoundaryChanged && (previousMapZoneX !== currentMapZoneX || previousMapZoneZ !== currentMapZoneZ));
+        if (mapZoneChanged) {
+            if (!initialLogin) {
+                this.triggerMapzoneExit(previousMapZoneX, previousMapZoneZ);
+            }
+            this.triggerMapzone(currentMapZoneX, currentMapZoneZ);
+            this.lastMapZone = CoordGrid.packCoord(0, currentMapZoneX, currentMapZoneZ);
+        }
+
+        const zoneChanged: boolean = initialLogin || previousLevel !== this.level || previousZoneX !== currentZoneX || previousZoneZ !== currentZoneZ;
+        if (zoneChanged) {
+            this.buildArea.rebuildZones();
+
+            if (!initialLogin) {
+                const previousZoneCoord = CoordGrid.packCoord(previousLevel, previousZoneX, previousZoneZ);
+                const currentZoneCoord = CoordGrid.packCoord(this.level, currentZoneX, currentZoneZ);
+                const lastWasMulti = World.gameMap.isMulti(previousZoneCoord);
+                const nowIsMulti = World.gameMap.isMulti(currentZoneCoord);
+                if (lastWasMulti !== nowIsMulti) {
+                    this.write(new SetMultiway(nowIsMulti));
+                }
+
+                this.triggerZoneExit(previousLevel, previousZoneX, previousZoneZ);
+            }
+
+            this.triggerZone(this.level, currentZoneX, currentZoneZ);
+            this.lastZone = CoordGrid.packCoord(this.level, currentZoneX, currentZoneZ);
+        }
     }
 
     onReconnect() {
