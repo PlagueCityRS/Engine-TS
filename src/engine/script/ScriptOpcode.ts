@@ -62,6 +62,13 @@ export const enum ScriptOpcode {
     SEQLENGTH, // official
     SPOTANIM_MAP,
     WORLD_DELAY, // official
+    REGION_CREATE = 1023,
+    REGION_SET,
+    REGION_GETCOORD,
+    REGION_FINDBYCOORD,
+    REGION_UID,
+    REGION_FINDBYUID,
+    REGION_SETEXITCOORD,
     MIDI_LENGTH,
 
     // Player ops (2000-2499)
@@ -518,6 +525,13 @@ export const ScriptOpcodeMap: Map<string, number> = new Map([
     ['SEQLENGTH', ScriptOpcode.SEQLENGTH],
     ['SPOTANIM_MAP', ScriptOpcode.SPOTANIM_MAP],
     ['WORLD_DELAY', ScriptOpcode.WORLD_DELAY],
+    ['REGION_CREATE', ScriptOpcode.REGION_CREATE],
+    ['REGION_SET', ScriptOpcode.REGION_SET],
+    ['REGION_GETCOORD', ScriptOpcode.REGION_GETCOORD],
+    ['REGION_FINDBYCOORD', ScriptOpcode.REGION_FINDBYCOORD],
+    ['REGION_UID', ScriptOpcode.REGION_UID],
+    ['REGION_FINDBYUID', ScriptOpcode.REGION_FINDBYUID],
+    ['REGION_SETEXITCOORD', ScriptOpcode.REGION_SETEXITCOORD],
     ['MIDI_LENGTH', ScriptOpcode.MIDI_LENGTH],
 
     ['AFK_EVENT', ScriptOpcode.AFK_EVENT],
