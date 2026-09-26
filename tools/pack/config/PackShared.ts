@@ -391,7 +391,7 @@ export async function packConfigs(cache: FileStream, modelFlags: number[]) {
     }
 
     if (rebuildCategory) {
-        const dat = Packet.alloc(1);
+        const dat = Packet.alloc(2);
         dat.p2(CategoryPack.size);
         for (let i = 0; i < CategoryPack.size; i++) {
             dat.p1(1);
