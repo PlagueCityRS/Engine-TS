@@ -241,8 +241,8 @@ export class NpcInfoFaceCoord implements InfoMessage {
     ) {}
 
     encode(buf: Packet): void {
-        buf.p2_alt1(this.z); //  check Z
-        buf.p2(this.x);
+        buf.p2_alt1(this.x);
+        buf.p2(this.z);
     }
 
     test(): number {
