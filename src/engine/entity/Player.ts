@@ -586,11 +586,16 @@ export default class Player extends PathingEntity {
         if (zoneChanged) {
             this.buildArea.rebuildZones();
 
-            if (!initialLogin) {
+            const currentZoneCoord = CoordGrid.packCoord(this.level, currentZoneX, currentZoneZ);
+            const nowIsMulti = World.gameMap.isMulti(currentZoneCoord);
+
+            if (initialLogin) {
+                if (nowIsMulti) {
+                    this.write(new SetMultiway(true));
+                }
+            } else {
                 const previousZoneCoord = CoordGrid.packCoord(previousLevel, previousZoneX, previousZoneZ);
-                const currentZoneCoord = CoordGrid.packCoord(this.level, currentZoneX, currentZoneZ);
                 const lastWasMulti = World.gameMap.isMulti(previousZoneCoord);
-                const nowIsMulti = World.gameMap.isMulti(currentZoneCoord);
                 if (lastWasMulti !== nowIsMulti) {
                     this.write(new SetMultiway(nowIsMulti));
                 }
