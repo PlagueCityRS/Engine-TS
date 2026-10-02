@@ -90,7 +90,7 @@ export default class ClientGameProt {
     static readonly MOVE_OPCLICK = new ClientGameProt(216, -1);
     static readonly REPORT_ABUSE = new ClientGameProt(3, 10); // todo: rename to SEND_SNAPSHOT
     static readonly MOVE_MINIMAPCLICK = new ClientGameProt(147, -1);
-    static readonly INV_BUTTOND = new ClientGameProt(253, 7);
+    static readonly INV_BUTTOND = new ClientGameProt(109, 7);
     static readonly IGNORELIST_DEL = new ClientGameProt(146, 8);
     static readonly IGNORELIST_ADD = new ClientGameProt(71, 8);
     static readonly IDK_SAVEDESIGN = new ClientGameProt(205, 13);
