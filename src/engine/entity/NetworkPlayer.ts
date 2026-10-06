@@ -157,8 +157,10 @@ export class NetworkPlayer extends Player {
             return;
         }
 
-        if (this.modalMain !== this.lastModalMain || this.modalChat !== this.lastModalChat || this.modalSide !== this.lastModalSide || this.refreshModalClose) {
-            if (this.refreshModalClose) {
+        const hasModalChanged = this.modalMain !== this.lastModalMain || this.modalChat !== this.lastModalChat || this.modalSide !== this.lastModalSide;
+
+        if (hasModalChanged || this.refreshModalClose) {
+            if (hasModalChanged) {
                 this.write(new IfClose());
             }
             this.refreshModalClose = false;
