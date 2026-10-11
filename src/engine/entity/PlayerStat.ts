@@ -18,7 +18,7 @@ export const enum PlayerStat {
     AGILITY,
     THIEVING,
     STAT18,
-    STAT19,
+    FARMING,
     RUNECRAFT
 }
 
@@ -42,14 +42,12 @@ export const PlayerStatMap: Map<string, number> = new Map([
     ['AGILITY', PlayerStat.AGILITY],
     ['THIEVING', PlayerStat.THIEVING],
     ['STAT18', PlayerStat.STAT18],
-    ['STAT19', PlayerStat.STAT19],
-    ['RUNECRAFT', PlayerStat.RUNECRAFT],
+    ['FARMING', PlayerStat.FARMING],
+    ['RUNECRAFT', PlayerStat.RUNECRAFT]
 ]);
 
-export const PlayerStatNameMap: Map<number, string> = new Map(
-    Array.from(PlayerStatMap.entries()).map(([key, value]) => [value, key])
-);
+export const PlayerStatNameMap: Map<number, string> = new Map(Array.from(PlayerStatMap.entries()).map(([key, value]) => [value, key]));
 
-export const PlayerStatEnabled = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, true];
+export const PlayerStatEnabled = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true];
 
 export const PlayerStatFree = [true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, false, false, false, false, false, true];
