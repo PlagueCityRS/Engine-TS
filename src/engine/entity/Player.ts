@@ -1233,29 +1233,6 @@ export default class Player extends PathingEntity {
         return reachedEntity(this.level, this.x, this.z, target.x, target.z, target.width, target.length, this.width) || reachedObj(this.level, this.x, this.z, target.x, target.z, target.width, target.length, this.width);
     }
 
-    private validateUseItem(): boolean {
-        const op = this.targetOp;
-        if (
-            op !== ServerTriggerType.APLOCU &&
-            op !== ServerTriggerType.OPLOCU &&
-            op !== ServerTriggerType.APNPCU &&
-            op !== ServerTriggerType.OPNPCU &&
-            op !== ServerTriggerType.APOBJU &&
-            op !== ServerTriggerType.OPOBJU &&
-            op !== ServerTriggerType.APPLAYERU &&
-            op !== ServerTriggerType.OPPLAYERU
-        ) {
-            return true;
-        }
-
-        const inv = this.getInventory(InvType.INV); // todo: Should probably keep track of com used but we only have 1 usable inv com for now
-        if (!inv || !inv.validSlot(this.lastUseSlot)) {
-            return false;
-        }
-
-        return inv.hasAt(this.lastUseSlot, this.lastUseItem) === true;
-    }
-
     tryInteract(allowOpScenery: boolean): boolean {
         if (!this.target || !this.hasInteraction() || !this.canAccess()) {
             return false;
@@ -1263,6 +1240,15 @@ export default class Player extends PathingEntity {
 
         const opTrigger = this.getOpTrigger();
         const apTrigger = this.getApTrigger();
+
+        // todo: Osrs does this on interaction tick, rs3 does it every tick. This is rs3 impl.
+        if (
+            (this.targetOp === ServerTriggerType.APPLAYERU || this.targetOp === ServerTriggerType.APNPCU || this.targetOp === ServerTriggerType.APLOCU || this.targetOp === ServerTriggerType.APOBJU) &&
+            !this.getInventory(InvType.INV)?.hasAt(this.lastUseSlot, this.lastUseItem)
+        ) {
+            this.clearInteraction();
+            return false;
+        }
 
         // Run the opTrigger if it exists and Player is within range
         // allowOpScenery controls if Locs and Objs can be op'd
@@ -1272,9 +1258,7 @@ export default class Player extends PathingEntity {
             this.target = null;
             this.clearWaypoints();
 
-            if (this.validateUseItem()) {
-                this.executeScript(ScriptRunner.init(opTrigger, this, target), true);
-            }
+            this.executeScript(ScriptRunner.init(opTrigger, this, target), true);
 
             // If p_opnpc was called, remember it for later
             // For now, keep the current target
@@ -1296,9 +1280,7 @@ export default class Player extends PathingEntity {
             this.target = null;
             this.clearWaypoints();
 
-            if (this.validateUseItem()) {
-                this.executeScript(ScriptRunner.init(apTrigger, this, target), true);
-            }
+            this.executeScript(ScriptRunner.init(apTrigger, this, target), true);
 
             // If p_opnpc was called, remember it for later
             // For now, keep the current target
