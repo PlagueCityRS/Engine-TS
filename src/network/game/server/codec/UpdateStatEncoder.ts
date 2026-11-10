@@ -7,8 +7,8 @@ export default class UpdateStatEncoder extends ServerGameMessageEncoder<UpdateSt
     prot = ServerGameProt.UPDATE_STAT;
 
     encode(buf: Packet, message: UpdateStat): void {
-        buf.p1(message.stat);
-        buf.p4((message.exp / 10) | 0);
-        buf.p1(message.level); // not base level
+        buf.p4_alt1((message.exp / 10) | 0);
+        buf.p1_alt1(message.level); // not base level
+        buf.p1_alt3(message.stat);
     }
 }

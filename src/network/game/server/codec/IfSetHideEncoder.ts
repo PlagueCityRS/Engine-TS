@@ -7,7 +7,7 @@ export default class IfSetHideEncoder extends ServerGameMessageEncoder<IfSetHide
     prot = ServerGameProt.IF_SETHIDE;
 
     encode(buf: Packet, message: IfSetHide): void {
+        buf.pbool_alt3(message.hidden);
         buf.p2(message.component);
-        buf.pbool(message.hidden);
     }
 }

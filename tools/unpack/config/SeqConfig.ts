@@ -121,7 +121,7 @@ export function unpackSeqConfig(config: ConfigIdx, id: number): string[] {
             } else if (duplicatebehaviour === 2) {
                 op = 'reset_loop';
             }
-            def.push(`duplicatebehavior=${op}`);
+            def.push(`duplicatebehaviour=${op}`);
         } else if (code === 12) {
             const code12 = dat.g4s();
             def.push(`code12=${code12}`);

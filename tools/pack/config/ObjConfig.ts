@@ -206,10 +206,10 @@ export function packObjConfigs(configs: Map<string, ConfigLine[]>, modelFlags: n
 
     for (let id = 0; id < ObjPack.max; id++) {
         const debugname = ObjPack.getById(id);
-        let config;
+        let config = configs.get(debugname);
 
         // todo: cert_ config names get reused... what to do now...
-        if (debugname.startsWith('cert_')) {
+        if (!config && debugname.startsWith('cert_')) {
             const uncert = ObjPack.getByName(debugname.substring('cert_'.length));
             if (uncert === -1) {
                 throw packStepError(debugname, 'Cert does not link to anything based on its name.');

@@ -7,7 +7,7 @@ export default class IfSetModelEncoder extends ServerGameMessageEncoder<IfSetMod
     prot = ServerGameProt.IF_SETMODEL;
 
     encode(buf: Packet, message: IfSetModel): void {
+        buf.p2_alt2(message.model);
         buf.p2(message.component);
-        buf.p2(message.model);
     }
 }

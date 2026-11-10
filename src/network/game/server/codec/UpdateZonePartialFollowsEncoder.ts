@@ -8,7 +8,7 @@ export default class UpdateZonePartialFollowsEncoder extends ServerGameMessageEn
     prot = ServerGameProt.UPDATE_ZONE_PARTIAL_FOLLOWS;
 
     encode(buf: Packet, message: UpdateZonePartialFollows): void {
-        buf.p1((message.zoneX << 3) - CoordGrid.zoneOrigin(message.originX));
         buf.p1((message.zoneZ << 3) - CoordGrid.zoneOrigin(message.originZ));
+        buf.p1_alt1((message.zoneX << 3) - CoordGrid.zoneOrigin(message.originX));
     }
 }

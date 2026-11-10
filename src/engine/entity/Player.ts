@@ -53,6 +53,7 @@ import MidiJingle from '#/network/game/server/model/MidiJingle.js';
 import MidiSong from '#/network/game/server/model/MidiSong.js';
 import ResetAnims from '#/network/game/server/model/ResetAnims.js';
 import ResetClientVarCache from '#/network/game/server/model/ResetClientVarCache.js';
+import SetMultiway from '#/network/game/server/model/SetMultiway.js';
 import TutOpen from '#/network/game/server/model/TutOpen.js';
 import UnsetMapFlag from '#/network/game/server/model/UnsetMapFlag.js';
 import UpdateInvStopTransmit from '#/network/game/server/model/UpdateInvStopTransmit.js';
@@ -72,6 +73,7 @@ import VarBitType from '#/cache/config/VarBitType.js';
 import FriendlistLoaded from '#/network/game/server/model/FriendlistLoaded.js';
 import UpdateIgnoreList from '#/network/game/server/model/UpdateIgnoreList.js';
 import Midi from '#/cache/midi/Midi.js';
+import IfOpenFullscreen from '#/network/game/server/model/IfOpenFullscreen.js';
 
 const levelExperience = new Int32Array(99);
 
@@ -269,6 +271,12 @@ export default class Player extends PathingEntity {
         // last login info
         sav.p8(this.lastLoginTime);
 
+        // persistent overworld fallback tile used when logging back in from instance coords
+        sav.p2(this.previousOverworldX);
+        sav.p2(this.previousOverworldZ);
+        sav.p1(this.previousOverworldLevel);
+        sav.p1(this.hasPreviousOverworldTile ? 1 : 0);
+
         sav.p4(Packet.getcrc(sav.data, 0, sav.pos));
         return sav.data.subarray(0, sav.pos);
     }
@@ -315,12 +323,20 @@ export default class Player extends PathingEntity {
     webClient: boolean = false;
     combatLevel: number = 3;
     skillLevel: number = 0;
-    headicons: number = 0;
+    headicons: number = -1;
+    skullicons: number = -1;
     baseLevels = new Uint8Array(21);
     lastStats: Int32Array = new Int32Array(21); // we track this so we know to flush stats only once a tick on changes
     lastLevels: Uint8Array = new Uint8Array(21); // we track this so we know to flush stats only once a tick on changes
     originX: number = -1;
     originZ: number = -1;
+
+    // Last known overworld tile; updated when transitioning from overworld -> instance.
+    previousOverworldX: number = 0;
+    previousOverworldZ: number = 0;
+    previousOverworldLevel: number = 0;
+    hasPreviousOverworldTile: boolean = false;
+
     buildArea: BuildArea = new BuildArea(this);
     animProtect: number = 0;
     invListeners: InventoryListener[] = [];
@@ -358,6 +374,8 @@ export default class Player extends PathingEntity {
     modalTutorial = -1;
     overlay = -1;
     lastOverlay = -1;
+    fullscreenMain = -1;
+    fullscreenBanner = -1;
     refreshModal = false;
     refreshModalClose = false;
     requestModalClose = false;
@@ -414,8 +432,8 @@ export default class Player extends PathingEntity {
     constructor(username: string, username37: bigint, hash64: bigint) {
         super(
             0,
-            3094,
-            3106, // tutorial island
+            3222, //3094,
+            3222, //3106, // tutorial island
             1,
             1,
             EntityLifeCycle.FOREVER,
@@ -498,8 +516,15 @@ export default class Player extends PathingEntity {
         // - runenergy
         // - reset anims
         // - social
+        if (!CoordGrid.isInstanceX(this.x)) {
+            this.previousOverworldX = this.x;
+            this.previousOverworldZ = this.z;
+            this.previousOverworldLevel = this.level;
+            this.hasPreviousOverworldTile = true;
+        }
 
         this.buildArea.rebuildNormal();
+        this.queueZoneTransitionTriggers(this.x, this.z, this.level, true);
         this.write(new ChatFilterSettings(this.publicChat, this.privateChat, this.tradeDuel));
 
         // todo: exact order
@@ -530,6 +555,57 @@ export default class Player extends PathingEntity {
         this.lastStepX = this.x - 1;
         this.lastStepZ = this.z;
         this.isActive = true;
+    }
+
+    protected override onTileUpdated(previousX: number, previousZ: number, previousLevel: number): void {
+        this.queueZoneTransitionTriggers(previousX, previousZ, previousLevel, false);
+    }
+
+    private queueZoneTransitionTriggers(previousX: number, previousZ: number, previousLevel: number, initialLogin: boolean): void {
+        const previousZoneX = (previousX >> 3) << 3;
+        const previousZoneZ = (previousZ >> 3) << 3;
+        const currentZoneX = (this.x >> 3) << 3;
+        const currentZoneZ = (this.z >> 3) << 3;
+
+        const previousMapZoneX = (previousZoneX >> 6) << 6;
+        const previousMapZoneZ = (previousZoneZ >> 6) << 6;
+        const currentMapZoneX = (currentZoneX >> 6) << 6;
+        const currentMapZoneZ = (currentZoneZ >> 6) << 6;
+
+        const mapZoneBoundaryChanged: boolean = initialLogin || (previousX >> 6) << 6 !== (this.x >> 6) << 6 || (previousZ >> 6) << 6 !== (this.z >> 6) << 6;
+        const mapZoneChanged: boolean = initialLogin || (mapZoneBoundaryChanged && (previousMapZoneX !== currentMapZoneX || previousMapZoneZ !== currentMapZoneZ));
+        if (mapZoneChanged) {
+            if (!initialLogin) {
+                this.triggerMapzoneExit(previousMapZoneX, previousMapZoneZ);
+            }
+            this.triggerMapzone(currentMapZoneX, currentMapZoneZ);
+            this.lastMapZone = CoordGrid.packCoord(0, currentMapZoneX, currentMapZoneZ);
+        }
+
+        const zoneChanged: boolean = initialLogin || previousLevel !== this.level || previousZoneX !== currentZoneX || previousZoneZ !== currentZoneZ;
+        if (zoneChanged) {
+            this.buildArea.rebuildZones();
+
+            const currentZoneCoord = CoordGrid.packCoord(this.level, currentZoneX, currentZoneZ);
+            const nowIsMulti = World.gameMap.isMulti(currentZoneCoord);
+
+            if (initialLogin) {
+                if (nowIsMulti) {
+                    this.write(new SetMultiway(true));
+                }
+            } else {
+                const previousZoneCoord = CoordGrid.packCoord(previousLevel, previousZoneX, previousZoneZ);
+                const lastWasMulti = World.gameMap.isMulti(previousZoneCoord);
+                if (lastWasMulti !== nowIsMulti) {
+                    this.write(new SetMultiway(nowIsMulti));
+                }
+
+                this.triggerZoneExit(previousLevel, previousZoneX, previousZoneZ);
+            }
+
+            this.triggerZone(this.level, currentZoneX, currentZoneZ);
+            this.lastZone = CoordGrid.packCoord(this.level, currentZoneX, currentZoneZ);
+        }
     }
 
     onReconnect() {
@@ -1165,6 +1241,7 @@ export default class Player extends PathingEntity {
         const opTrigger = this.getOpTrigger();
         const apTrigger = this.getApTrigger();
 
+        // todo: Osrs does this on interaction tick, rs3 does it every tick. This is rs3 impl.
         if (
             (this.targetOp === ServerTriggerType.APPLAYERU || this.targetOp === ServerTriggerType.APNPCU || this.targetOp === ServerTriggerType.APLOCU || this.targetOp === ServerTriggerType.APOBJU) &&
             !this.getInventory(InvType.INV)?.hasAt(this.lastUseSlot, this.lastUseItem)
@@ -1364,6 +1441,7 @@ export default class Player extends PathingEntity {
         const stream = Packet.alloc(0);
 
         stream.p1(this.gender);
+        stream.p1(this.skullicons);
         stream.p1(this.headicons);
 
         // todo: transmog support - write first "slot" with -1, followed by npc ID
@@ -2114,6 +2192,13 @@ export default class Player extends PathingEntity {
         }
     }
 
+    openFullscreen(main: number, banner: number) {
+        // eh
+        this.fullscreenMain = main;
+        this.fullscreenBanner = banner;
+        this.write(new IfOpenFullscreen(this.fullscreenMain, this.fullscreenBanner));
+    }
+
     exactMove(startX: number, startZ: number, endX: number, endZ: number, startCycle: number, endCycle: number, direction: number) {
         this.teleport(endX, endZ, this.level);
         this.exactStartX = startX;
@@ -2280,17 +2365,47 @@ export default class Player extends PathingEntity {
         this.write(new HintArrow(-1, 0, 0, 0, 0, 0));
     }
 
+    getDateRuneDay() {
+        const currentMs = performance.timeOrigin + performance.now();
+        return Math.floor(currentMs / 86400000) - 11745;
+    }
+
+    dateToRuneDay(date: bigint) {
+        const kjlfsad = Number(date);
+        return kjlfsad;
+    }
+
+    runeDayToDate(runeDay: number) {
+        const ajklsf = BigInt(runeDay);
+        return ajklsf;
+    }
+
     lastLoginInfo() {
-        const lastDate: bigint = this.lastLoginTime === 0n ? BigInt(Date.now()) : this.lastLoginTime;
-        const nextDate: bigint = BigInt(Date.now());
+        const lastDate: number = this.lastLoginTime === 0n ? this.getDateRuneDay() : this.dateToRuneDay(this.lastLoginTime);
+        const nextDate: number = this.getDateRuneDay();
 
         const lastIp = 2130706433; // 127.0.0.1
-        const daysSinceLogin: number = (Number(nextDate - lastDate) / (1000 * 60 * 60 * 24)) | 0;
-        const daysSinceRecoveriesChanged = 201; // hide :)
-        const warnMembersInNonMembers: boolean = !Environment.node.members && this.members;
+        const daysSinceLogin = lastDate;
+        const daysSincePasswordChanged = 8971; // hide :)
+        const currentDay = nextDate;
+        const unreadMessageCount = 0;
+        const membersCreditDays = 365;
+        const daysSinceRecoveriesChanged = 1;
+        const daysSinceContactDetailsChanged = 2;
 
-        this.write(new LastLoginInfo(lastIp, daysSinceLogin, daysSinceRecoveriesChanged, this.messageCount, warnMembersInNonMembers));
-        this.lastLoginTime = nextDate;
+        this.write(
+            new LastLoginInfo(
+                lastIp,
+                currentDay,
+                daysSinceLogin,
+                daysSincePasswordChanged,
+                daysSinceRecoveriesChanged,
+                daysSinceContactDetailsChanged, // current day?
+                unreadMessageCount,
+                membersCreditDays
+            )
+        );
+        this.lastLoginTime = this.runeDayToDate(nextDate);
     }
 
     logout(): void {

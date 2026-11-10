@@ -8,7 +8,7 @@ export default class IfSetPositionEncoder extends ServerGameMessageEncoder<IfSet
 
     encode(buf: Packet, message: IfSetPosition): void {
         buf.p2(message.component);
-        buf.p2(message.x);
-        buf.p2(message.y);
+        buf.p2_alt1(message.x);
+        buf.p2_alt3(message.y);
     }
 }

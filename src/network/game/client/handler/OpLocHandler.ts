@@ -35,7 +35,13 @@ export default class OpLocHandler extends ClientGameMessageHandler<OpLoc> {
         }
 
         let locType = LocType.get(loc.type);
-        if (locType.multivarbit !== -1) {
+        if (locType.multivarp !== -1) {
+            const state = player.getVar(locType.multivarp) as number;
+
+            if (state >= 0 && state < locType.multiloc.length && locType.multiloc[state] !== -1) {
+                locType = LocType.get(locType.multiloc[state]);
+            }
+        } else if (locType.multivarbit !== -1) {
             const state = player.getVarBit(locType.multivarbit);
 
             if (state >= 0 && state < locType.multiloc.length && locType.multiloc[state] !== -1) {

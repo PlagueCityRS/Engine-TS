@@ -2,6 +2,7 @@ import {
     NpcInfoAnim,
     NpcInfoChangeType,
     NpcInfoDamage,
+    NpcInfoDamage2,
     NpcInfoFaceCoord,
     NpcInfoFaceEntity,
     NpcInfoSay,
@@ -15,7 +16,8 @@ import {
     PlayerInfoFaceCoord,
     PlayerInfoFaceEntity,
     PlayerInfoSay,
-    PlayerInfoSpotanim
+    PlayerInfoSpotanim,
+    PlayerInfoDamage2
 } from './messages.js';
 import { NpcInfoProt, PlayerInfoProt, npcInfoProtIndex, playerInfoProtIndex } from './prot.js';
 import { Packet } from './packet.js';
@@ -65,7 +67,7 @@ export class PlayerRenderer {
             highs += this.cache(pid, new PlayerInfoDamage(player.damageTaken, player.damageType, player.currentHitpoints, player.baseHitpoints), PlayerInfoProt.DAMAGE);
         }
         if ((masks & PlayerInfoProt.DAMAGE2) !== 0) {
-            highs += this.cache(pid, new PlayerInfoDamage(player.damageTaken2, player.damageType2, player.currentHitpoints, player.baseHitpoints), PlayerInfoProt.DAMAGE2);
+            highs += this.cache(pid, new PlayerInfoDamage2(player.damageTaken2, player.damageType2, player.currentHitpoints, player.baseHitpoints), PlayerInfoProt.DAMAGE2);
         }
         if ((masks & PlayerInfoProt.FACE_COORD) !== 0) {
             const length = this.cache(pid, new PlayerInfoFaceCoord(player.faceX, player.faceZ), PlayerInfoProt.FACE_COORD);
@@ -178,7 +180,7 @@ export class NpcRenderer {
             highs += this.cache(nid, new NpcInfoDamage(npc.damageTaken, npc.damageType, npc.currentHitpoints, npc.baseHitpoints), NpcInfoProt.DAMAGE);
         }
         if ((masks & NpcInfoProt.DAMAGE2) !== 0) {
-            highs += this.cache(nid, new NpcInfoDamage(npc.damageTaken2, npc.damageType2, npc.currentHitpoints, npc.baseHitpoints), NpcInfoProt.DAMAGE2);
+            highs += this.cache(nid, new NpcInfoDamage2(npc.damageTaken2, npc.damageType2, npc.currentHitpoints, npc.baseHitpoints), NpcInfoProt.DAMAGE2);
         }
         if ((masks & NpcInfoProt.CHANGE_TYPE) !== 0) {
             highs += this.cache(nid, new NpcInfoChangeType(npc.ntype), NpcInfoProt.CHANGE_TYPE);

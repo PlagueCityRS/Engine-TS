@@ -11,7 +11,7 @@ import { LocIterator } from '#/engine/script/ScriptIterators.js';
 import { ScriptOpcode } from '#/engine/script/ScriptOpcode.js';
 import { ActiveLoc } from '#/engine/script/ScriptPointer.js';
 import { CommandHandlers } from '#/engine/script/ScriptRunner.js';
-import { check, CoordValid, DurationValid, LocAngleValid, LocShapeValid, LocTypeValid, ParamTypeValid, SeqTypeValid } from '#/engine/script/ScriptValidators.js';
+import { check, CoordValid, DurationValid, DurationValidZeroOk, LocAngleValid, LocShapeValid, LocTypeValid, ParamTypeValid, SeqTypeValid } from '#/engine/script/ScriptValidators.js';
 import World from '#/engine/World.js';
 
 const LocOps: CommandHandlers = {
@@ -23,16 +23,19 @@ const LocOps: CommandHandlers = {
         const locAngle: LocAngle = check(angle, LocAngleValid);
         const locShape: LocShape = check(shape, LocShapeValid);
         const locLayer = locShapeLayer(locShape);
-        check(duration, DurationValid);
+        // Inside an instance, duration 0 is allowed and means "permanent" (no lifecycle event).
+        check(duration, CoordGrid.isInstanceX(position.x) ? DurationValidZeroOk : DurationValid);
 
         // Search through zone and change a loc if it's on the same layer
-        const locs: IterableIterator<Loc> = World.gameMap.getZone(position.x, position.z, position.level).getLocsUnsafe(CoordGrid.packZoneCoord(position.x, position.z));
-        for (const loc of locs) {
-            if (loc.layer === locLayer) {
-                World.changeLoc(loc, type, locShape, locAngle, duration);
-                state.activeLoc = loc;
-                state.pointerAdd(ActiveLoc[state.intOperand]);
-                return;
+        const zone = World.gameMap.getZoneIfExists(position.x, position.z, position.level);
+        if (zone) {
+            for (const loc of zone.getLocsUnsafe(CoordGrid.packZoneCoord(position.x, position.z))) {
+                if (loc.layer === locLayer) {
+                    World.changeLoc(loc, type, locShape, locAngle, duration);
+                    state.activeLoc = loc;
+                    state.pointerAdd(ActiveLoc[state.intOperand]);
+                    return;
+                }
             }
         }
 
@@ -60,7 +63,8 @@ const LocOps: CommandHandlers = {
     [ScriptOpcode.LOC_CHANGE]: state => {
         const [id, duration] = state.popInts(2);
 
-        check(duration, DurationValid);
+        // Inside an instance, duration 0 is allowed and means "permanent" (no lifecycle event).
+        check(duration, CoordGrid.isInstanceX(state.activeLoc.x) ? DurationValidZeroOk : DurationValid);
         check(id, LocTypeValid);
 
         World.changeLoc(state.activeLoc, id, state.activeLoc.shape, state.activeLoc.angle, duration);

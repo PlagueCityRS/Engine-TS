@@ -7,6 +7,6 @@ export default class IfOpenSideEncoder extends ServerGameMessageEncoder<IfOpenSi
     prot = ServerGameProt.IF_OPENSIDE;
 
     encode(buf: Packet, message: IfOpenSide): void {
-        buf.p2(message.component);
+        buf.p2_alt1(message.component);
     }
 }

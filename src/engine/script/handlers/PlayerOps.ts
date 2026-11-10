@@ -656,6 +656,15 @@ const PlayerOps: CommandHandlers = {
         state.activePlayer.openChatModal(check(state.popInt(), NumberNotNull));
     },
 
+    [ScriptOpcode.IF_OPENFULLSCREEN]: state => {
+        const [main, banner] = state.popInts(2);
+
+        check(main, NumberNotNull);
+        check(banner, NumberNotNull);
+
+        state.activePlayer.openFullscreen(main, banner);
+    },
+
     [ScriptOpcode.IF_OPENMAIN_SIDE]: state => {
         const [main, side] = state.popInts(2);
 
@@ -1039,7 +1048,15 @@ const PlayerOps: CommandHandlers = {
     },
 
     [ScriptOpcode.HEADICONS_SET]: state => {
-        state.activePlayer.headicons = check(state.popInt(), NumberNotNull);
+        state.activePlayer.headicons = state.popInt();
+    },
+
+    [ScriptOpcode.SKULLICONS_GET]: state => {
+        state.pushInt(state.activePlayer.skullicons);
+    },
+
+    [ScriptOpcode.SKULLICONS_SET]: state => {
+        state.activePlayer.skullicons = state.popInt();
     },
 
     // https://x.com/JagexAsh/status/1791472651623370843

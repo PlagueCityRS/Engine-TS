@@ -46,6 +46,7 @@ import ObjRevealEncoder from '#/network/game/server/codec/ObjRevealEncoder.js';
 import PCountDialogEncoder from '#/network/game/server/codec/PCountDialogEncoder.js';
 import PlayerInfoEncoder from '#/network/game/server/codec/PlayerInfoEncoder.js';
 import RebuildNormalEncoder from '#/network/game/server/codec/RebuildNormalEncoder.js';
+import RebuildRegionEncoder from '#/network/game/server/codec/RebuildRegionEncoder.js';
 import ResetAnimsEncoder from '#/network/game/server/codec/ResetAnimsEncoder.js';
 import ResetClientVarCacheEncoder from '#/network/game/server/codec/ResetClientVarCacheEncoder.js';
 import SetMultiwayEncoder from '#/network/game/server/codec/SetMultiwayEncoder.js';
@@ -111,6 +112,7 @@ import ObjReveal from '#/network/game/server/model/ObjReveal.js';
 import PCountDialog from '#/network/game/server/model/PCountDialog.js';
 import PlayerInfo from '#/network/game/server/model/PlayerInfo.js';
 import RebuildNormal from '#/network/game/server/model/RebuildNormal.js';
+import RebuildRegion from '#/network/game/server/model/RebuildRegion.js';
 import ResetAnims from '#/network/game/server/model/ResetAnims.js';
 import ResetClientVarCache from '#/network/game/server/model/ResetClientVarCache.js';
 import SetMultiway from '#/network/game/server/model/SetMultiway.js';
@@ -141,6 +143,8 @@ import FriendlistLoaded from '#/network/game/server/model/FriendlistLoaded.js';
 import FriendlistLoadedEncoder from '#/network/game/server/codec/FriendlistLoadedEncoder.js';
 import MinimapToggle from '#/network/game/server/model/MinimapToggle.js';
 import MinimapToggleEncoder from '#/network/game/server/codec/MinimapToggleEncoder.js';
+import IfOpenFullscreen from '#/network/game/server/model/IfOpenFullscreen.js';
+import IfOpenFullscreenEncoder from '#/network/game/server/codec/IfOpenFullscreen.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type GenericOutgoingMessage<T extends ServerGameMessage> = new (...args: any[]) => T;
@@ -209,6 +213,7 @@ class ServerGameProtRepository {
         this.bind(PCountDialog, new PCountDialogEncoder());
         this.bind(PlayerInfo, new PlayerInfoEncoder());
         this.bind(RebuildNormal, new RebuildNormalEncoder());
+        this.bind(RebuildRegion, new RebuildRegionEncoder());
         this.bind(ResetAnims, new ResetAnimsEncoder());
         this.bind(ResetClientVarCache, new ResetClientVarCacheEncoder());
         this.bind(SetMultiway, new SetMultiwayEncoder());
@@ -233,6 +238,7 @@ class ServerGameProtRepository {
         this.bind(VarpSmall, new VarpSmallEncoder());
         this.bind(SetPlayerOp, new SetPlayerOpEncoder());
         this.bind(FriendlistLoaded, new FriendlistLoadedEncoder());
+        this.bind(IfOpenFullscreen, new IfOpenFullscreenEncoder());
     }
 }
 

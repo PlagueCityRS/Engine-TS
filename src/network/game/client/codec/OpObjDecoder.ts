@@ -12,10 +12,37 @@ export default class OpObjDecoder extends ClientGameMessageDecoder<OpObj> {
     }
 
     decode(buf: Packet) {
-        const x = buf.g2();
-        const z = buf.g2();
-        const obj = buf.g2();
+        let x = -1; //buf.g2();
+        let z = -1; //buf.g2();
+        let obj = -1; //buf.g2();
 
+        switch (this.op) {
+            case 1:
+                obj = buf.g2();
+                z = buf.g2_alt3();
+                x = buf.g2();
+                break;
+            case 2:
+                obj = buf.g2_alt2();
+                z = buf.g2();
+                x = buf.g2_alt3();
+                break;
+            case 3:
+                z = buf.g2_alt3();
+                obj = buf.g2_alt1();
+                x = buf.g2_alt2();
+                break;
+            case 4:
+                z = buf.g2_alt1();
+                obj = buf.g2_alt2();
+                x = buf.g2_alt1();
+                break;
+            case 5:
+                obj = buf.g2();
+                x = buf.g2();
+                z = buf.g2_alt2();
+                break;
+        }
         return new OpObj(this.op, x, z, obj);
     }
 }

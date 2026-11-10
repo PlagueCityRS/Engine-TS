@@ -12,7 +12,25 @@ export default class OpNpcDecoder extends ClientGameMessageDecoder<OpNpc> {
     }
 
     decode(buf: Packet) {
-        const npcSlot = buf.g2();
+        let npcSlot = -1;
+
+        switch (this.op) {
+            case 1:
+                npcSlot = buf.g2_alt2();
+                break;
+            case 2:
+                npcSlot = buf.g2_alt3();
+                break;
+            case 3:
+                npcSlot = buf.g2();
+                break;
+            case 4:
+                npcSlot = buf.g2_alt2();
+                break;
+            case 5:
+                npcSlot = buf.g2_alt1();
+                break;
+        }
 
         return new OpNpc(this.op, npcSlot);
     }

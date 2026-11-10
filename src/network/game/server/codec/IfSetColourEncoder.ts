@@ -7,7 +7,7 @@ export default class IfSetColourEncoder extends ServerGameMessageEncoder<IfSetCo
     prot = ServerGameProt.IF_SETCOLOUR;
 
     encode(buf: Packet, message: IfSetColour): void {
-        buf.p2(message.component);
         buf.p2(message.colour);
+        buf.p2_alt1(message.component);
     }
 }

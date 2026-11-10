@@ -7,7 +7,7 @@ export default class IfSetAnimEncoder extends ServerGameMessageEncoder<IfSetAnim
     prot = ServerGameProt.IF_SETANIM;
 
     encode(buf: Packet, message: IfSetAnim): void {
-        buf.p2(message.component);
-        buf.p2(message.seq);
+        buf.p2_alt1(message.seq);
+        buf.p2_alt1(message.component);
     }
 }

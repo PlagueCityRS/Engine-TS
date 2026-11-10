@@ -21,7 +21,7 @@ async function getNpcType() {
     return npcTypePromise;
 }
 
-async function getPackWorldmap() {
+async function _getPackWorldmap() {
     if (!worldmapPromise) {
         worldmapPromise = import('#tools/pack/map/Worldmap.js').then(module => module.packWorldmap);
     }
@@ -252,7 +252,7 @@ export async function packMaps(cache, modelFlags) {
         return false;
     }
 
-    let rebuildWorldmap = !fs.existsSync('data/pack/mapview/worldmap.jag');
+    let _rebuildWorldmap = !fs.existsSync('data/pack/mapview/worldmap.jag');
     let rebuiltAnyMap = false;
     let NpcType = null;
     for (const name of maps) {
@@ -296,7 +296,7 @@ export async function packMaps(cache, modelFlags) {
         }
 
         rebuiltAnyMap = true;
-        rebuildWorldmap = true;
+        _rebuildWorldmap = true;
         const data = fs
             .readFileSync(file, 'utf8')
             .replace(/\r/g, '')
@@ -479,11 +479,11 @@ export async function packMaps(cache, modelFlags) {
 
     clientStore.save();
     serverStore.save();
-
-    if (rebuildWorldmap) {
-        const packWorldmap = await getPackWorldmap();
-        await packWorldmap();
-    }
+    //todo map
+    // if (_rebuildWorldmap) {
+    //     const packWorldmap = await getPackWorldmap();
+    //     await packWorldmap();
+    // }
 
     return rebuiltAnyMap;
 }

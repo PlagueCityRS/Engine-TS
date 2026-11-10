@@ -106,10 +106,12 @@ function reorderUnpacked(config: string[], settings: { moveName: boolean; moveDe
             name.push(line);
         } else if (settings.moveDesc && line.startsWith('desc=')) {
             desc.push(line);
-        } else if (settings.moveModel && line.startsWith('model')) {
+        } else if (settings.moveModel && (line.startsWith('model') || line.startsWith('ldmodel'))) {
             model.push(line);
         } else if (settings.moveRecol && (line.startsWith('recol') || line.startsWith('retex'))) {
             recol.push(line);
+        } else if (!line.startsWith('hasalpha=')) {
+            others.push(line);
         }
     }
     return [...debugname, ...name, ...desc, ...model, ...recol, ...others];
@@ -207,13 +209,8 @@ function unpackConfig(revision: string, type: string, unpack: UnpackConfigImpl, 
 
 type UnpackModelImpl = (source: ConfigIdx, id: number) => number[] | LocModels;
 
-function unpackModelNames(type: string, unpack: UnpackModelImpl, config: Jagfile, config2?: Jagfile, modelRenameOffset?: number) {
+function unpackModelNames(type: string, unpack: UnpackModelImpl, config: Jagfile) {
     const sourceIdx = readConfigIdx(config.read(type + '.idx'), config.read(type + '.dat'));
-
-    let compareIdx;
-    if (config2 && config2.has(type + '.dat')) {
-        compareIdx = readConfigIdx(config2.read(type + '.idx'), config2.read(type + '.dat'));
-    }
 
     const locs: LocModels[] = [];
     for (let id = 0; id < sourceIdx.size; id++) {
@@ -227,15 +224,17 @@ function unpackModelNames(type: string, unpack: UnpackModelImpl, config: Jagfile
                 seenAsNonCentrepiece[info.model] = true;
             }
         }
+
+        for (const info of config.ldModels) {
+            if (info.shape !== 10) {
+                seenAsNonCentrepiece[info.model] = true;
+            }
+        }
     }
 
     const existingFiles = listFilesExt(`${Environment.build.srcDir}/models`, '.ob2');
 
-    let start = 0;
-    if (compareIdx) {
-        start = compareIdx.size;
-    }
-    for (let id = start; id < locs.length; id++) {
+    for (let id = 0; id < locs.length; id++) {
         const config = locs[id];
         let debugname = LocPack.getById(id);
 
@@ -252,7 +251,29 @@ function unpackModelNames(type: string, unpack: UnpackModelImpl, config: Jagfile
                 continue;
             }
 
-            if (model < modelRenameOffset!) {
+            const modelName = ModelPack.getById(model);
+            if (!modelName.startsWith('model_')) {
+                continue;
+            }
+
+            let name = `${debugname}${LocShapeSuffix[shape]}`;
+            let i = 2;
+            while (ModelPack.getByName(name) !== -1) {
+                name = `${debugname}i${i}${LocShapeSuffix[shape]}`;
+                i++;
+            }
+
+            const filePath = existingFiles.find(x => x.endsWith(`/${modelName}.ob2`));
+            if (filePath) {
+                fs.renameSync(filePath, `${Environment.build.srcDir}/models/loc/${name}.ob2`);
+            }
+
+            ModelPack.register(model, name);
+        }
+
+        for (const info of config.ldModels) {
+            const { model, shape } = info;
+            if (shape === LocShapeSuffix._8 && seenAsNonCentrepiece[model]) {
                 continue;
             }
 
@@ -261,11 +282,10 @@ function unpackModelNames(type: string, unpack: UnpackModelImpl, config: Jagfile
                 continue;
             }
 
-            const suffix = shape === LocShapeSuffix._8 ? '' : LocShapeSuffix[shape];
-            let name = `${debugname}${suffix}`;
+            let name = `${debugname}_ld${LocShapeSuffix[shape]}`;
             let i = 2;
             while (ModelPack.getByName(name) !== -1) {
-                name = `${debugname}i${i}${suffix}`;
+                name = `${debugname}i${i}_ld${LocShapeSuffix[shape]}`;
                 i++;
             }
 
@@ -344,7 +364,7 @@ function unpackConfigs(revision: string) {
         fs.mkdirSync(`${Environment.build.srcDir}/models/npc`, { recursive: true });
     }
 
-    unpackModelNames('loc', unpackLocModels, config, config2, modelRenameOffset);
+    unpackModelNames('loc', unpackLocModels, config);
 
     unpackConfig(revision, 'loc', unpackLocConfig, config, config2, modelRenameOffset);
     unpackConfig(revision, 'obj', unpackObjConfig, config, config2, modelRenameOffset);
@@ -361,4 +381,4 @@ function unpackConfigs(revision: string) {
     printInfo('Done! Manual post processing may be required.');
 }
 
-unpackConfigs('289');
+unpackConfigs('349');

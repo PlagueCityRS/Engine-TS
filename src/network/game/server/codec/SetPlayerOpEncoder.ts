@@ -9,7 +9,7 @@ export default class SetPlayerOpEncoder extends ServerGameMessageEncoder<SetPlay
 
     encode(buf: Packet, message: SetPlayerOp): void {
         buf.p1(message.op);
-        buf.p1(message.primary);
+        buf.p1_alt3(message.primary);
         buf.pjstr(message.value);
     }
 }

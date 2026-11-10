@@ -7,11 +7,10 @@ export default class OpNpcUDecoder extends ClientGameMessageDecoder<OpNpcU> {
     prot = ClientGameProt.OPNPCU;
 
     decode(buf: Packet) {
-        const npcSlot = buf.g2();
-        const useObj = buf.g2();
-        const useSlot = buf.g2();
         const useCom = buf.g2();
-
+        const useObj = buf.g2_alt1();
+        const npcSlot = buf.g2_alt1();
+        const useSlot = buf.g2_alt1();
         return new OpNpcU(npcSlot, useObj, useSlot, useCom);
     }
 }

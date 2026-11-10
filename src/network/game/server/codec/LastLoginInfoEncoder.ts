@@ -7,10 +7,16 @@ export default class LastLoginInfoEncoder extends ServerGameMessageEncoder<LastL
     prot = ServerGameProt.LAST_LOGIN_INFO;
 
     encode(buf: Packet, message: LastLoginInfo): void {
-        buf.p4(message.lastLoginIp);
-        buf.p2(message.daysSinceLogin);
-        buf.p1(message.daysSinceRecoveryChange);
+        buf.p4_alt1(message.lastLoginIp);
+        buf.p2(message.previousLoginDay);
+        buf.p2_alt1(message.currentDay);
         buf.p2(message.unreadMessageCount);
-        buf.pbool(message.warnMembersInNonMembers);
+        buf.p2_alt3(0); // discarded on client
+        buf.p1_alt1(1); // COME BACK BRAIN
+        buf.p2_alt1(message.daysSincePasswordChange);
+        buf.p2(message.daysSinceContactDetailsChange);
+        buf.p2_alt3(message.membersCreditDays);
+        buf.p2_alt2(message.daysSinceRecoveryChange);
+        buf.p2(0); // discarded on client
     }
 }

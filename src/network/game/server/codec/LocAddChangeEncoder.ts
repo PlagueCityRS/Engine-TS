@@ -7,8 +7,8 @@ export default class LocAddChangeEncoder extends ServerGameZoneMessageEncoder<Lo
     prot = ServerGameZoneProt.LOC_ADD_CHANGE;
 
     encode(buf: Packet, message: LocAddChange): void {
-        buf.p1(message.coord);
-        buf.p1((message.shape << 2) | (message.angle & 0x3));
+        buf.p1_alt3(message.coord);
         buf.p2(message.loc);
+        buf.p1_alt2((message.shape << 2) | (message.angle & 0x3));
     }
 }

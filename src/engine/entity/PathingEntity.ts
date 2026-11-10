@@ -19,6 +19,7 @@ import { canTravel, changeNpcCollision, changeBlockCollision, changePlayerOccCol
 import ServerTriggerType from '#/engine/script/ServerTriggerType.js';
 import World from '#/engine/World.js';
 import NpcType from '#/cache/config/NpcType.js';
+import { printError } from '#/util/Logger.js';
 
 type TargetSubject = {
     type: number;
@@ -122,6 +123,11 @@ export default abstract class PathingEntity extends Entity {
     abstract defaultMoveSpeed(): MoveSpeed;
 
     /**
+     * Hook for entity-specific logic when tile/level changes are applied.
+     */
+    protected onTileUpdated(_previousX: number, _previousZ: number, _previousLevel: number): void {}
+
+    /**
      * Process movement function for a PathingEntity to use.
      * Checks for if this PathingEntity has any waypoints to move towards.
      * Handles force movement. Validates and moves depending on if this
@@ -183,8 +189,15 @@ export default abstract class PathingEntity extends Entity {
         this.lastStepZ = previousZ;
 
         if (CoordGrid.zone(previousX) !== CoordGrid.zone(this.x) || CoordGrid.zone(previousZ) !== CoordGrid.zone(this.z) || previousLevel != this.level) {
-            World.gameMap.getZone(previousX, previousZ, previousLevel).leave(this);
-            World.gameMap.getZone(this.x, this.z, this.level).enter(this);
+            const previousZone = World.gameMap.getZoneIfExists(previousX, previousZ, previousLevel);
+            const currentZone = World.gameMap.getZoneIfExists(this.x, this.z, this.level);
+
+            if (previousZone && previousZone !== currentZone) {
+                previousZone.leave(this);
+            }
+            if (currentZone && previousZone !== currentZone) {
+                currentZone.enter(this);
+            }
         }
     }
 
@@ -223,12 +236,21 @@ export default abstract class PathingEntity extends Entity {
         const srcX = this.x;
         const srcZ = this.z;
 
+        const nextX = this.x + delta[0];
+        const nextZ = this.z + delta[1];
+
+        // After map initialization, entities must not move into zones that were never allocated.
+        if (!World.gameMap.getZoneIfExists(nextX, nextZ, this.level)) {
+            return -1;
+        }
+
         // Move entity
-        this.x = this.x + delta[0];
-        this.z = this.z + delta[1];
+        this.x = nextX;
+        this.z = nextZ;
 
         // Refresh zone presence if we had a waypoint, even if we didn't move
         this.refreshZonePresence(srcX, srcZ, this.level);
+        this.onTileUpdated(srcX, srcZ, this.level);
 
         // Update waypoint index if we reached the current waypoint
         if (this.waypointIndex !== -1) {
@@ -279,27 +301,53 @@ export default abstract class PathingEntity extends Entity {
     }
 
     teleJump(x: number, z: number, level: number): void {
-        this.teleport(x, z, level);
+        if (!this.teleport(x, z, level)) {
+            return;
+        }
         this.moveSpeed = MoveSpeed.INSTANT;
         this.jump = true;
     }
 
-    teleport(x: number, z: number, level: number): void {
+    teleport(x: number, z: number, level: number): boolean {
         if (isNaN(level)) {
             level = 0;
         }
         level = Math.max(0, Math.min(level, 3));
 
-        if (!isZoneAllocated(level, x, z) && (!(this instanceof Player) || this.staffModLevel < 3)) {
-            if (this instanceof Player) {
-                this.messageGame('Invalid teleport!');
-            }
-            return;
-        }
-
         const previousX: number = this.x;
         const previousZ: number = this.z;
         const previousLevel: number = this.level;
+
+        if (this instanceof Player) {
+            const movingToInstance: boolean = CoordGrid.isInstanceX(x);
+            // Only capture the return tile when entering an instance FROM the overworld. Entering an
+            // instance from another instance must NOT overwrite the original overworld tile, and the
+            // stored tile must always be an overworld location.
+            if (movingToInstance && !CoordGrid.isInstanceX(previousX)) {
+                const targetInstance = World.instances.findInstanceByTile(level, x, z);
+                if (targetInstance?.exitCoord && !CoordGrid.isInstanceX(targetInstance.exitCoord.x)) {
+                    this.previousOverworldX = targetInstance.exitCoord.x;
+                    this.previousOverworldZ = targetInstance.exitCoord.z;
+                    this.previousOverworldLevel = targetInstance.exitCoord.level;
+                } else {
+                    this.previousOverworldX = previousX;
+                    this.previousOverworldZ = previousZ;
+                    this.previousOverworldLevel = previousLevel;
+                }
+                this.hasPreviousOverworldTile = true;
+            }
+        }
+
+        const allocated: boolean = isZoneAllocated(level, x, z);
+        const initialized: boolean = World.gameMap.hasZone(x, z, level);
+        if (!allocated || !initialized) {
+            printError(`[Teleport] Invalid teleport for ${this.constructor.name} from (${this.x}, ${this.z}, L${this.level}) to (${x}, ${z}, L${level}) allocated=${allocated} initialized=${initialized}`);
+            if (this instanceof Player) {
+                this.messageGame('Invalid teleport!');
+            }
+            return false;
+        }
+
         this.x = x;
         this.z = z;
         this.level = level;
@@ -308,6 +356,7 @@ export default abstract class PathingEntity extends Entity {
         const moveZ: number = CoordGrid.moveZ(this.z, dir);
         this.focus(CoordGrid.fine(moveX, this.width), CoordGrid.fine(moveZ, this.length), false);
         this.refreshZonePresence(previousX, previousZ, previousLevel);
+        this.onTileUpdated(previousX, previousZ, previousLevel);
         this.lastStepX = this.x - 1;
         this.lastStepZ = this.z;
         this.tele = true;
@@ -316,6 +365,8 @@ export default abstract class PathingEntity extends Entity {
             this.moveSpeed = MoveSpeed.INSTANT;
             this.jump = true;
         }
+
+        return true;
     }
 
     /**

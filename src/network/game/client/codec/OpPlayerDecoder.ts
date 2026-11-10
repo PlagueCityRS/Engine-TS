@@ -12,8 +12,25 @@ export default class OpPlayerDecoder extends ClientGameMessageDecoder<OpPlayer> 
     }
 
     decode(buf: Packet) {
-        const playerSlot = buf.g2();
+        let playerSlot = -1;
 
+        switch (this.op) {
+            case 1:
+                playerSlot = buf.g2_alt3();
+                break;
+            case 2:
+                playerSlot = buf.g2_alt2();
+                break;
+            case 3:
+                playerSlot = buf.g2_alt1();
+                break;
+            case 4:
+                playerSlot = buf.g2();
+                break;
+            case 5:
+                playerSlot = buf.g2();
+                break;
+        }
         return new OpPlayer(this.op, playerSlot);
     }
 }

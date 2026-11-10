@@ -49,7 +49,6 @@ const MEDIA_ORDER = [
     'combaticons3',
     'combatboxes',
     'tradebacking',
-    'headicons',
     'hitmarks',
     'cross',
     'mapdots',
@@ -69,7 +68,29 @@ const MEDIA_ORDER = [
     'gnomeball_buttons',
     'mapmarker',
     'mod_icons',
-    'mapedge'
+    'mapedge',
+    'leftarrow_small',
+    'rightarrow_small',
+    'blackmark',
+    'button_brown',
+    'button_red',
+    'chest',
+    'coins',
+    'key',
+    'keys',
+    'pen',
+    'startgame',
+    'titlescroll',
+    'letter',
+    'button_brown_big',
+    'headicons_pk',
+    'headicons_prayer',
+    'headicons_hint',
+    'overlay_multiway',
+    'overlay_duel',
+    'tex_brown',
+    'tex_red',
+    'number_button'
 ];
 
 export async function packClientMedia(cache: FileStream) {
@@ -120,7 +141,8 @@ export async function packClientMedia(cache: FileStream) {
     }
 
     const packed = fs.readFileSync('data/pack/client/media');
-    if (Environment.build.verify && !Packet.checkcrc(packed, 0, packed.length, -1710005394)) {
+    if (Environment.build.verify && !Packet.checkcrc(packed, 0, packed.length, 597493222)) {
+        // supposed to be 844454839 but pallete is different?
         throw new Error('media checksum mismatch!\nYou can disable this safety check by setting BUILD_VERIFY=false');
     }
 

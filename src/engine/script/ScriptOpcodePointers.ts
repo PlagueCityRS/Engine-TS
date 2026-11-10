@@ -170,6 +170,10 @@ const ScriptOpcodePointers: {
     [ScriptOpcode.IF_OPENCHAT]: {
         require: ['active_player']
     },
+    [ScriptOpcode.IF_OPENFULLSCREEN]: {
+        require: ['active_player'],
+        require2: ['active_player2']
+    },
     [ScriptOpcode.TUT_OPEN]: {
         require: ['active_player']
     },

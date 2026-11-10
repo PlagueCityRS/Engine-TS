@@ -8,6 +8,6 @@ export default class VarpLargeEncoder extends ServerGameMessageEncoder<VarpLarge
 
     encode(buf: Packet, message: VarpLarge): void {
         buf.p2(message.varp);
-        buf.p4(message.value);
+        buf.p4_alt3(message.value);
     }
 }

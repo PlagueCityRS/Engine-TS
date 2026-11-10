@@ -7,7 +7,7 @@ export default class VarpSmallEncoder extends ServerGameMessageEncoder<VarpSmall
     prot = ServerGameProt.VARP_SMALL;
 
     encode(buf: Packet, message: VarpSmall): void {
-        buf.p2(message.varp);
         buf.p1(message.value);
+        buf.p2(message.varp);
     }
 }

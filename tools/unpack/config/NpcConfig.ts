@@ -4,7 +4,7 @@ import { modelsHaveTexture } from '#/cache/graphics/Model.js';
 import ColorConversion from '#/util/ColorConversion.js';
 import Environment from '#/util/Environment.js';
 import { printWarning } from '#/util/Logger.js';
-import { ModelPack, NpcPack, SeqPack, TexturePack } from '#tools/pack/PackFile.js';
+import { ModelPack, NpcPack, SeqPack, TexturePack, VarbitPack, VarpPack } from '#tools/pack/PackFile.js';
 
 import { ConfigIdx } from './Common.js';
 import { listFilesExt } from '#tools/pack/Parse.js';
@@ -161,6 +161,27 @@ export function unpackNpcConfig(config: ConfigIdx, id: number, compare?: ConfigI
         } else if (code === 103) {
             const turnspeed = dat.g2();
             def.push(`turnspeed=${turnspeed}`);
+        } else if (code === 106) {
+            const varbit = dat.g2();
+            const varp = dat.g2();
+
+            if (varbit === 65535) {
+                const name = VarpPack.getById(varp) || 'varp_' + varp;
+                def.push(`multivar=${name}`);
+            } else {
+                const name = VarbitPack.getById(varbit) || 'varbit_' + varbit;
+                def.push(`multivar=${name}`);
+            }
+
+            const states = dat.g1();
+            for (let i = 0; i <= states; i++) {
+                const multinpc = dat.g2();
+
+                if (multinpc !== 65535) {
+                    const name = NpcPack.getById(multinpc) || 'npc_' + multinpc;
+                    def.push(`multinpc=${i},${name}`);
+                }
+            }
         } else {
             printWarning(`unknown npc code ${code}`);
         }

@@ -23,6 +23,7 @@ import {
     check,
     CoordValid,
     DurationValid,
+    DurationValidZeroOk,
     HitTypeValid,
     HuntTypeValid,
     HuntVisValid,
@@ -59,7 +60,8 @@ const NpcOps: CommandHandlers = {
 
         const position: CoordGrid = check(coord, CoordValid);
         const npcType: NpcType = check(id, NpcTypeValid);
-        check(duration, DurationValid);
+        // Inside an instance, duration 0 is allowed and means "permanent" (no lifecycle event).
+        check(duration, CoordGrid.isInstanceX(position.x) ? DurationValidZeroOk : DurationValid);
 
         const npc = new Npc(position.level, position.x, position.z, npcType.size, npcType.size, EntityLifeCycle.DESPAWN, World.getNextNid(), npcType.id, npcType.blockwalk);
         World.addNpc(npc, duration);

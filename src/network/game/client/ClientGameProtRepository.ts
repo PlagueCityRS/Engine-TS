@@ -165,7 +165,7 @@ class ClientGameProtRepository {
         this.bind(new TutClickSideDecoder(), new TutClickSideHandler());
         this.bind(new ChatSetModeDecoder(), new ChatSetModeHandler());
         this.bind(new ReportAbuseDecoder(), new ReportAbuseHandler());
-        this.bind(new EventCameraPositionDecoder, new EventCameraPositionHandler());
+        this.bind(new EventCameraPositionDecoder(), new EventCameraPositionHandler());
         this.bind(new EventAppletFocusDecoder(), new EventAppletFocusHandler());
         this.bind(new EventMouseClickDecoder(), new EventMouseClickHandler());
         this.bind(new EventMouseMoveDecoder(), new EventMouseMoveHandler());
