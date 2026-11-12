@@ -261,6 +261,9 @@ export class NetworkPlayer extends Player {
     }
 
     updateZones() {
+        // turns out we need the correct zones when we try to update them
+        this.buildArea.rebuildZones();
+
         const loadedZones: Set<number> = this.buildArea.loadedZones;
         const activeZones: Set<number> = this.buildArea.activeZones;
 
