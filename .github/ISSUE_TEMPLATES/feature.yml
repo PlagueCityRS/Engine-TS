@@ -1,0 +1,41 @@
+name: Feature
+description: Quests, minigames, dialogues, or anything that should be in a version of the game that is not currently present.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: checkboxes
+    id: affected-repos
+    attributes:
+      label: Target Repositories
+      description: Select all repositories likely involved (useful for tracking companion PRs).
+      options:
+        - label: Engine-TS
+        - label: Content
+        - label: Client-TS
+        - label: PC-Schema
+
+  - type: textarea
+    id: overview
+    attributes:
+      label: What Needs to be Done?
+      description: Describe the feature, mechanic, or content being added.
+      validations:
+      required: true
+
+  - type: textarea
+    id: scope-breakdown
+    attributes:
+      label: Proposed Breakdown / Acceptance Criteria
+      description: Optional checklist or breakdown of sub-tasks across repos or milestones.
+
+  - type: textarea
+    id: historical-reference
+    attributes:
+      label: Historical Accuracy & Design Notes
+      description: Note relevant mechanics, edge cases, formulas, or behaviors needed for accurate preservation.
+
+  - type: textarea
+    id: logs-context
+    attributes:
+      label: Logs, Screenshots, or Extra Context
+      description: Historical references/proof to use in development and testing.
