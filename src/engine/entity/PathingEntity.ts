@@ -185,8 +185,12 @@ export default abstract class PathingEntity extends Entity {
                 changePlayerOccCollision(this.width, this.x, this.z, this.level, true);
                 break;
         }
-        this.lastStepX = previousX;
-        this.lastStepZ = previousZ;
+
+        // Only set lastStep for following if it is different than current coords
+        if (previousX !== this.x || previousZ !== this.z) {
+            this.lastStepX = previousX;
+            this.lastStepZ = previousZ;
+        }
 
         if (CoordGrid.zone(previousX) !== CoordGrid.zone(this.x) || CoordGrid.zone(previousZ) !== CoordGrid.zone(this.z) || previousLevel != this.level) {
             const previousZone = World.gameMap.getZoneIfExists(previousX, previousZ, previousLevel);
