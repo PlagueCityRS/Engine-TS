@@ -16,23 +16,26 @@ export default class ClientGameProt {
     static readonly UNK3 = new ClientGameProt(182, 0); // in do action before invbutton4
     static readonly UNK4 = new ClientGameProt(164, 3); // in do action before loc examine
 
-    // static readonly ANTICHEAT_OPLOGIC1 = new ClientGameProt(195, 4);
-    // static readonly ANTICHEAT_OPLOGIC2 = new ClientGameProt(81, 2);
-    // static readonly ANTICHEAT_OPLOGIC3 = new ClientGameProt(122, 4);
-    // static readonly ANTICHEAT_OPLOGIC4 = new ClientGameProt(49, 1);
-    // static readonly ANTICHEAT_OPLOGIC5 = new ClientGameProt(46, 1);
-    // static readonly ANTICHEAT_OPLOGIC6 = new ClientGameProt(73, 2);
-    // static readonly ANTICHEAT_OPLOGIC7 = new ClientGameProt(133, 4);
-    // static readonly ANTICHEAT_OPLOGIC8 = new ClientGameProt(168, 1);
-    // static readonly ANTICHEAT_OPLOGIC9 = new ClientGameProt(88, 3);
+    static readonly ANTICHEAT_OPLOGIC1 = new ClientGameProt(100, 0);
+    static readonly ANTICHEAT_OPLOGIC2 = new ClientGameProt(95, 4);
+    static readonly ANTICHEAT_OPLOGIC3 = new ClientGameProt(182, 0);
+    static readonly ANTICHEAT_OPLOGIC4 = new ClientGameProt(199, 4);
+    static readonly ANTICHEAT_OPLOGIC5 = new ClientGameProt(164, 3);
+    static readonly ANTICHEAT_OPLOGIC6 = new ClientGameProt(87, 2);
+    // static readonly ANTICHEAT_OPLOGIC7 = unused in rev 349
+    static readonly ANTICHEAT_OPLOGIC8 = new ClientGameProt(30, 4);
+    // static readonly ANTICHEAT_OPLOGIC9 = unused in rev 349
 
-    static readonly ANTICHEAT_CYCLELOGIC1 = new ClientGameProt(235, -1);
-    static readonly ANTICHEAT_CYCLELOGIC2 = new ClientGameProt(119, -1);
-    // static readonly ANTICHEAT_CYCLELOGIC3 = new ClientGameProt(125, 1);
-    // static readonly ANTICHEAT_CYCLELOGIC4 = new ClientGameProt(137, 1);
-    // static readonly ANTICHEAT_CYCLELOGIC5 = new ClientGameProt(85, 0);
-    // static readonly ANTICHEAT_CYCLELOGIC6 = new ClientGameProt(255, 1);
-    // static readonly ANTICHEAT_CYCLELOGIC7 = new ClientGameProt(232, 0);
+    // static readonly ANTICHEAT_CYCLELOGIC1 = unused in rev 349
+    static readonly ANTICHEAT_CYCLELOGIC2 = new ClientGameProt(127, -1);
+    // static readonly ANTICHEAT_CYCLELOGIC3 = unused in rev 349
+    // static readonly ANTICHEAT_CYCLELOGIC4 = unused in rev 349
+    // static readonly ANTICHEAT_CYCLELOGIC5 = unused in rev 349
+    static readonly ANTICHEAT_CYCLELOGIC6 = new ClientGameProt(35, 0);
+    static readonly ANTICHEAT_CYCLELOGIC7 = new ClientGameProt(1, 2);
+    static readonly ANTICHEAT_CYCLELOGIC8 = new ClientGameProt(84, 4);
+    static readonly ANTICHEAT_CYCLELOGIC9 = new ClientGameProt(193, 4);
+    static readonly ANTICHEAT_CYCLELOGIC10 = new ClientGameProt(119, -1);
 
     static readonly OPOBJ1 = new ClientGameProt(41, 6);
     static readonly OPOBJ2 = new ClientGameProt(12, 6);
@@ -84,6 +87,7 @@ export default class ClientGameProt {
     static readonly RESUME_PAUSEBUTTON = new ClientGameProt(154, 2);
     static readonly CLOSE_MODAL = new ClientGameProt(211, 0);
     static readonly RESUME_P_COUNTDIALOG = new ClientGameProt(86, 4);
+    static readonly RESUME_P_NAMEDIALOG = new ClientGameProt(200, 8); // todo: handler. Unsure if used
     static readonly TUT_CLICKSIDE = new ClientGameProt(225, 1);
 
     static readonly MAP_BUILD_COMPLETE = new ClientGameProt(210, 0);
