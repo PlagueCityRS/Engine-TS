@@ -1,0 +1,58 @@
+name: Bug Report
+description: Report broken behavior, regressions, historical inaccuracies, or discrepancies from expected game mechanics
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check existing issues before opening a new one. Include concrete reproduction details whenever possible.
+
+  - type: checkboxes
+    id: affected-repos
+    description: If you are unsure, just leave this blank.
+    attributes:
+      label: Affected Repository / Component
+      options:
+        - label: Engine-TS
+        - label: Content
+        - label: Client-TS
+        - label: PC-Schema
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A concise description of what is broken.
+      placeholder: e.g., Quest step dialogue fails to advance after turning in item X
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to Reproduce
+      description: Exact sequence of actions to trigger the bug.
+      placeholder: |
+        1. Log in and travel to ...
+        2. Talk to NPC ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-expected
+    attributes:
+      label: Actual vs. Expected Behavior
+      description: What happens currently vs. what should happen (and any historical/reference notes if relevant).
+      placeholder: |
+        - **Actual:** ...
+        - **Expected:** ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs-context
+    attributes:
+      label: Logs, Screenshots, or Extra Context
+      description: Console/server logs, packet details, commit/branch info, or reproduction rate.

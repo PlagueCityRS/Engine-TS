@@ -1,0 +1,35 @@
+name: Task
+description: Anything not covered under bug or feature, including but not limited to shop stock, pricing, and definitions changes.
+title: "[Task]: "
+labels: ["task"]
+body:
+  - type: checkboxes
+    id: affected-repos
+    attributes:
+      label: Affected Repository / Component
+      description: If you are unsure, just leave this blank.
+      options:
+        - label: Engine-TS
+        - label: Content
+        - label: Client-TS
+        - label: PC-Schema
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Objective
+      description: What needs to be done and why?
+      validations:
+        required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Implementation Notes & Definition of Done
+      description: Key files/systems involved, constraints, or criteria for closing this task.
+
+  - type: textarea
+    id: logs-context
+    attributes:
+      label: Logs, Screenshots, or Extra Context
+      description: Historical references/proof to use in development and testing.
