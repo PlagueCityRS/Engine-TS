@@ -12,11 +12,11 @@ export default class LastLoginInfoEncoder extends ServerGameMessageEncoder<LastL
         buf.p2_alt1(message.currentDay);
         buf.p2(message.unreadMessageCount);
         buf.p2_alt3(0); // discarded on client
-        buf.p1_alt1(1); // COME BACK BRAIN
-        buf.p2_alt1(message.daysSincePasswordChange);
-        buf.p2(message.daysSinceContactDetailsChange);
+        buf.p1_alt1(message.contactDetailsStatus);
+        buf.p2_alt1(message.passwordChangedDay);
+        buf.p2(message.contactDetailsSetDay);
         buf.p2_alt3(message.membersCreditDays);
-        buf.p2_alt2(message.daysSinceRecoveryChange);
+        buf.p2_alt2(message.recoveriesSetDay);
         buf.p2(0); // discarded on client
     }
 }

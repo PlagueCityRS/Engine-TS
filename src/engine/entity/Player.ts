@@ -432,8 +432,8 @@ export default class Player extends PathingEntity {
     constructor(username: string, username37: bigint, hash64: bigint) {
         super(
             0,
-            3222, //3094,
-            3222, //3106, // tutorial island
+            3094,
+            3106, // tutorial island
             1,
             1,
             EntityLifeCycle.FOREVER,
@@ -2365,47 +2365,26 @@ export default class Player extends PathingEntity {
         this.write(new HintArrow(-1, 0, 0, 0, 0, 0));
     }
 
-    getDateRuneDay() {
-        const currentMs = performance.timeOrigin + performance.now();
+    msToRuneDay(currentMs: number): number {
         return Math.floor(currentMs / 86400000) - 11745;
     }
 
-    dateToRuneDay(date: bigint) {
-        const kjlfsad = Number(date);
-        return kjlfsad;
-    }
-
-    runeDayToDate(runeDay: number) {
-        const ajklsf = BigInt(runeDay);
-        return ajklsf;
-    }
-
     lastLoginInfo() {
-        const lastDate: number = this.lastLoginTime === 0n ? this.getDateRuneDay() : this.dateToRuneDay(this.lastLoginTime);
-        const nextDate: number = this.getDateRuneDay();
+        const now = Date.now();
+        const currentDay = this.msToRuneDay(now);
+        const lastLoginDate = this.lastLoginTime === 0n ? currentDay : this.msToRuneDay(Number(this.lastLoginTime));
 
         const lastIp = 2130706433; // 127.0.0.1
-        const daysSinceLogin = lastDate;
-        const daysSincePasswordChanged = 8971; // hide :)
-        const currentDay = nextDate;
         const unreadMessageCount = 0;
+        const contactDetailsStatus = 1; // 0 = not set, 1 = set, 2 = needs new
+        const passwordChangedDay = 0; // 0 = "Never changed" hide :)
+        const contactDetailsSetDay = currentDay - 2;
         const membersCreditDays = 365;
-        const daysSinceRecoveriesChanged = 1;
-        const daysSinceContactDetailsChanged = 2;
+        const recoveriesSetDay = currentDay - 1; // 0 = not set, > currentDay = pending change
 
-        this.write(
-            new LastLoginInfo(
-                lastIp,
-                currentDay,
-                daysSinceLogin,
-                daysSincePasswordChanged,
-                daysSinceRecoveriesChanged,
-                daysSinceContactDetailsChanged, // current day?
-                unreadMessageCount,
-                membersCreditDays
-            )
-        );
-        this.lastLoginTime = this.runeDayToDate(nextDate);
+        this.write(new LastLoginInfo(lastIp, lastLoginDate, currentDay, unreadMessageCount, contactDetailsStatus, passwordChangedDay, contactDetailsSetDay, membersCreditDays, recoveriesSetDay));
+
+        this.lastLoginTime = BigInt(now);
     }
 
     logout(): void {
